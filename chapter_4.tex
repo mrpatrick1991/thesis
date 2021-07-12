@@ -259,10 +259,52 @@ In Figure~\ref{cross-validation-example}, the synthetic data set from Figure~\re
 
 Unlike the ``L-curve'' method, cross-validation leaves no room for the human analysing the problem to have input on the regularization parameter $\alpha$. Instead of looking for an inflection point on a log-log graph, which has some room for interpretation, the minimization of squared errors across values of $\alpha$ for cross-validation is carried out numerically. The minimum located in Figure~\ref{cross-validation-example}, for example, is quite sharply defined. This lack of interpretation is a strength of the cross-validation method. Further, since the minimization process requires no human intervention, it can be  applied to large bodies of synthetic data automatically. This is useful both for running on synthetic data for testing, as well as different sets of experimental data. Since the objective characterization of the performance of an inversion technique to the X-ray inversion problem will depend on its application across to synthetic data, this strength is important. 
 
-\begin{figure}[h]
+\begin{figure}[p]
     \centering
-    \includegraphics[width=1.1\textwidth]{figures/chapter_4/cross_validation_data/fig.pdf}
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/cross-validation-example/fig.pdf}
     \caption{Application of Tikhonov regularization and the leave-one-out cross-validation method to synthetic exponential electron spectrum. The assumed electron spectrum is shown in blue (bottom, left), and the retrieved spectra are shown for direct inversion (grey) and Tikhonov regularization (green).}
     \label{cross-validation-data}
 \end{figure}
+\newpage
+\section{Higher Order Regularization}
+
+The process of Tikhonov regularization can be interpreted as the addition of a-priori information to the problem. In Tikhonov regularization, the modified least-squares problem:
+
+$$\min_{\mathbf{x}} \vert \vert \mathbf{A} \mathbf{x} - \mathbf{b} \vert \vert + \alpha \vert \vert \mathbf{x} \vert \vert$$
+
+has a penalty term  $\vert \vert \alpha \vert \vert \mathbf{x} \vert \vert$ introduces a preference for solutions with a smaller norm. This was motivated by the fact that more complex solutions typically have a larger number of non-zero terms than simpler solutions, and, to introduce stability, the strength of the regularization should increase with solution complexity. This was indicated graphically through the L-curve method. There are other forms for the penalty term, which can be chosen to align with the properties of physically reasonable solutions to the problem at hand. This section will examine these higher-order regularization terms as applied to the X-ray inversion problem. 
+
+Write a new least-squares problem as:
+
+$$\min_{\mathbf{x}} \vert \vert \mathbf{A} \mathbf{x} - \mathbf{b} \vert \vert + \alpha \vert \vert \mathbf{L} \mathbf{x} \vert \vert$$
+
+where $\mathbf{L}$ is a linear operator. If $\mathbf{L}$ is the identity matrix, then the ordinary regularization is recovered. This is termed zeroth-order tikhonov regularization. In first-order tikhonov regularization, $\mathbf{L}$ is chosen to be the matrix which approximates the first derivative operator:
+
+\[
+\mathbf{L} = \begin{bmatrix} 
+    1 & -1 & 0 & \dots \\
+    0 & 1 & -1 &\dots \\
+    \vdots & \ddots & \\
+    0 & \dots & 1 & -1 
+    \end{bmatrix}
+\].
+
+Unlike zeroth-order regularization, which prefers small solutions, this choice of $\mathbf{L}$ penalizes solutions which change - the preference is for constant solutions. For problems where we have an a-priori expectation that solutions are constant, this operator would be the clear choice. A useful and interesting feature of first-order regularization is that no advance knowledge of the best constant solution needs to be applied. 
+
+For the X-ray inversion problem, we do not have any strong expectation that solutions will be constant. In fact, it is more reasonable that electron fluxes decrease as a function of energy. This is motivated by both satellite observations, and balloon flights where models of exponentially decreasing electron spectra tend to best describe measured X-ray data. This motivates the search for a different penalty term for the regularization problem, which better matches this expectation. 
+
+Second-order Tikhonov regularization uses a linear operator which approximates the second derivative:
+
+\[
+\mathbf{L} = \begin{bmatrix} 
+    1 & -2 & 1 & 0 & \dots \\
+    0 & 1 & -2 & 1 & \dots \\
+    \vdots & \ddots & \\
+    0 & \dots & 1 & -2 & 1 
+    \end{bmatrix}
+\].
+
+This operator introduces a preference for smooth solutions. There is an intuitive reason why using this operator for the X-ray inversion problem might be useful - as the noise in the measured X-ray spectrum increases, the number of features detectable in the model electron spectrum will go down. A relevant example would be an electron spectrum which is well-described by two beams at different energies. For low noise levels in the corresponding measured X-ray spectrum, the two beams can be resolved through direct inversion, without applying regularization. As the noise in the measured spectrum is increased, second-order regularization will dull and blend the two sharp peaks until eventually they are not distinguishable.  This is a desirable property, since the bias tends towards solutions which reflect the lack of information a high noise measurement represents. This is illustrated in Figure~\ref{two_peak_second_order_example}.
+
+Another argument for applying second-order Tikhonov regularization to the X-ray inversion problem is that completely sharp, mono-energetic features don't appear in natural electron spectra. Thermal processes tend to relax such distributions to have a characteristic width, and over a long enough time period, the central limit theorem tends towards Gaussian distributions regardless. Since sharp solutions aren't generally expected, it makes sense to choose $\mathbf{L}$ such that they are penalized. This represents further injection of a-priori information to the problem.  
 
