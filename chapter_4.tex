@@ -45,7 +45,7 @@ is large for small changes in the kernel function $\delta f$ and input data $\de
 \begin{figure}[p]
 \label{why_ill_conditioned}
 \centering
-\includegraphics[width=1.0\textwidth]{figures/fig_0.pdf}
+\includegraphics[width=1.0\textwidth]{figures/chapter_4/why_ill_conditioned/fig.pdf}
 \caption{(top): Example of three different assumed electron energy spectra (mono-energetic, exponentially decreasing, and gaussian) for a precipitating electron flux of $1\times10^9$ electrons per $\mbox{cm}^2$ per second. (bottom): Resulting simulated X-ray spectra for each electron spectrum, using the methods developed in Chapter 3.} 
 \end{figure}
 
@@ -64,7 +64,7 @@ To show the effect of choosing different binning schemes for the rows and column
 \begin{figure}[p]
 \label{condition_number_binning}
 \centering
-\includegraphics[width=1.0\textwidth]{figures/fig_1.pdf}
+\includegraphics[width=1.0\textwidth]{figures/chapter_4/condition_number_binning/fig.pdf}
 \caption{Condition number of mapping $\mathbf{G}$ as a function of X-ray spectrum and electron spectrum bin-widths in KeV. The white region is the domain where the condition number is infinite, and $\mathbf{G}$ is singular.}
 \end{figure}
 
@@ -73,7 +73,7 @@ Figure~\ref{condition_number_binning} shows that there is a significant set of b
 \begin{figure}[h]
 \label{direct_inversion_example}
 \centering
-\includegraphics[width=1.0\textwidth]{figures/fig_3.pdf}
+\includegraphics[width=1.0\textwidth]{figures/chapter_4/direct_inversion_example/fig.pdf}
 \caption{Direct matrix inversion applied to simulated exponential electron spectra with bin widths of 10 (A), 50 (B), and 100 (C) KeV. The incident particle flux is $1\times10^8$ electrons / second / KeV. }
 \end{figure}
 
@@ -89,7 +89,7 @@ In a real experiment, a measured X-ray spectrum must be background subtracted. T
 
 Due to the sensitivity of the X-ray inversion problem to small perturbations in the measured spectrum, care must be taken when applying tests using synthetic data so as not to introduce a sampling bias in the measured performance of different inversion techniques. It is possible, for example, to combine a particular background subtraction with a simulated spectrum and corresponding measurement noise to obtain a solution to the inverse problem which very nearly matches the assumed causative electron spectrum. This may not be the case when the same test is subsequently run with a different sample of the background spectrum, or a different random seed for the simulated detector noise. For this reason, single tests of an inversion method on one synthetically generated spectrum have no significance. Evaluating a solution technique to the inverse problem on synthetic data is itself an experiment, and must be treated using a sample size large enough to provide significance in the results. 
 
-The data available for this project was obtained using multiple detectors which all had an identical design (discussed in Chapter~\ref{4}). Since the data set is large, many background samples can be generated for use when creating synthetic data. An example of a ``quiet time'' X-ray spectrum is shown in Figure~\ref{quiet_time_xray}. Over 20 of these background spectra are collected across the available data set, and used to create the average background spectrum shown in Figure~\ref{quiet_time_xray_average}.
+The data available for this project was obtained using multiple detectors which all had an identical design (discussed in Chapter~3). Since the data set is large, many background samples can be generated for use when creating synthetic data. An example of a ``quiet time'' X-ray spectrum is shown in Figure~\ref{quiet_time_xray}. Over 20 of these background spectra are collected across the available data set, and used to create the average background spectrum shown in Figure~\ref{quiet_time_xray_average}.
 
 Simulated X-ray spectra which are generated using the techniques of Chapter~3 are created without a background component. To account for this in the generation of synthetic data, the average of the available measured background spectra is added to the simulated spectrum, and then a randomly chosen background spectrum is subtracted. We will assume that the differences across all of the measured background spectra can be used as a proxy for the systematic error
 expected when a particular background subtraction is applied. 
@@ -143,7 +143,7 @@ If the reduced $\chi^2$ statistic is much greater than 1, then it indicates a po
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/fig_4.pdf}
+    \includegraphics[width=1.0\textwidth]{figures/chapter_4/overunderfit_example/fig.pdf}
     \caption{Example of over-fit and under-fit models to data. A random data set is generated and polynomial models are fit using least-squares regression. The reduced $\chi^2$ statistic is shown for each model.}
     \label{overunderfit_example}
 \end{figure}
@@ -164,7 +164,7 @@ Figure~\ref{singular-value-plots} shows the distribution of singular values acro
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/fig_5.pdf}
+    \includegraphics[width=1.0\textwidth]{figures/chapter_4/singular_value_plots/fig.pdf}
     \caption{Plots of the singular values of the kernel matrix for the X-ray inversion problem for different electron spectrum bin widths, with singular values arranged from biggest to smallest.}
     \label{singular-value-plots}
 \end{figure}
@@ -173,7 +173,7 @@ To justify the use of a biased estimator in solving the X-ray inversion problem,
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=.95\textwidth]{figures/fig_6.pdf}
+    \includegraphics[width=.95\textwidth]{figures/chapter_4/condition_number_binning_tsvd/fig.pdf}
     \caption{Plots of the condition number of the kernel matrix for the X-ray inversion problem as a function of electron spectrum and X-ray spectrum bin width, for 1 (A) through 6 (F) truncated singular values.}
     \label{condition-number-binning-tsvd}
 \end{figure}
@@ -190,7 +190,7 @@ The use of the truncated singular value decomposition as a biased estimator intr
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=.95\textwidth]{figures/fig_7.pdf}
+    \includegraphics[width=.95\textwidth]{figures/chapter_4/tsvd_test/fig.pdf}
     \caption{Plots of simulated electron spectra for a total electron flux of $1\times10^9 \mbox{electrons} / \mbox{cm}^2 / \mbox{second}$, and their reconstruction from the associated simulated X-ray spectra using a truncated singular value approximation of the kernel matrix. Electron bin widths are set to 50 KeV, and X-ray bin widths to 1 KeV. (A), (B), and (C) show reconstructions with the smallest 1, 5, and 10 singular values dropped from the expansion.}
     \label{tsvd_test}
 \end{figure}
@@ -229,7 +229,7 @@ An example of this applied to the X-ray inversion problem is shown in Figure~\re
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.1\textwidth]{figures/figure_8.pdf}
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/l-curve-example/fig.pdf}
     \caption{Application of Tikhonov regularization and the ``L-curve'' method to synthetic exponential electron spectrum. The assumed electron spectrum is shown in blue (bottom, left), and the retrieved spectra are shown for direct inversion (grey) and Tikhonov regularization (green).  }
     \label{l-curve-example}
 \end{figure}
@@ -248,7 +248,7 @@ The fact that the L-curve method is somewhat heuristic motivates us to look for 
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/fig_10.pdf}
+    \includegraphics[width=1.0\textwidth]{figures/chapter_4/cross_validation_motivation/fig.pdf}
     \caption{Random data set (blue) with under-fit (orange), and over-fit (green) representations. A particular data point (red) is removed prior to fitting. The removed data point is far from both the over-fit and under-fit representations of the data. }
     \label{cross_validation_motivation}
 \end{figure}
@@ -261,8 +261,8 @@ Unlike the ``L-curve'' method, cross-validation leaves no room for the human ana
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.1\textwidth]{figures/fig_11/figure_11.pdf}
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/cross_validation_data/fig.pdf}
     \caption{Application of Tikhonov regularization and the leave-one-out cross-validation method to synthetic exponential electron spectrum. The assumed electron spectrum is shown in blue (bottom, left), and the retrieved spectra are shown for direct inversion (grey) and Tikhonov regularization (green).}
-    \label{cross-validation-example}
+    \label{cross-validation-data}
 \end{figure}
 
