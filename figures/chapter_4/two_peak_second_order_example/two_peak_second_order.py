@@ -138,8 +138,26 @@ def tks(R, op, kappa, xs, posonly):
     sol = scipy.optimize.minimize(eq,tk(R,op,kappa,xs,True)[0],options={"maxiter":1e40},bounds=bnds)
     return(sol.x)
 
+# <codecell>
+
+# cross validation
+
+def cv(R, op, kappas, xs, posonly):
+    err = []
+    for kappa in kappas:
+        e = 0
+        for i in range(0, len(xs) - 1):
+            RST = np.delete(R,i,0)
+            xst = np.delete(xs,i,0) # delete one X-ray data point and solve the reduced problem
+            sol = tk(RST, op, kappa, xst, posonly)[0]
+            sol[-1] = 0
+            e += (np.matmul(R,sol)[i] - xs[i])**2
+        err.append(e)
+    return(err)
 
 # <codecell>
+
+np.random.seed(123)
 
 error = []
 bias = []
@@ -147,30 +165,54 @@ k = []
 
 # low noise 
 
-x_low = mono(400,1e10)[0] + mono(600,1e10)[0]
-e_low = mono(400,1e10)[1] + mono(600,1e10)[1]
+x_low = mono(400,1e7)[0] + mono(600,1e7)[0]
+e_low = mono(400,1e7)[1] + mono(600,1e7)[1]
 
 # medium noise 
 
-x_med = mono(400,1e8)[0] + mono(600,1e8)[0]
-e_med = mono(400,1e8)[1] + mono(600,1e8)[1]
+x_med = mono(400,1e6)[0] + mono(600,1e6)[0]
+e_med = mono(400,1e6)[1] + mono(600,1e6)[1]
 
 # high noise 
 
-x_high = mono(400,1e6)[0] + mono(600,1e6)[0]
-e_high = mono(400,1e6)[1] + mono(600,1e6)[1]
+x_high = mono(400,5e5)[0] + mono(600,5e5)[0]
+e_high = mono(400,5e5)[1] + mono(600,5e5)[1]
 
-sol_high = tk(R,L2,1e-4,x_high,False)[0]
-sol_med = tk(R,L2,1e-7,x_med,False)[0]
-sol_low = tk(R,L2,1e-9,x_low,False)[0]
+# solutions, no preconditioning 
 
-plt.plot(espace,e_high)
-plt.plot(espace,sol_high)
-plt.plot(espace,sol_med)
-plt.plot(espace,sol_low)
+err_low = cv(R, L2, np.logspace(-15,-12,20),x_low,False)
+err_med = cv(R, L2, np.logspace(-10,-3,30),x_med,False)
+err_high = cv(R, L2, np.logspace(-10,-3,30),x_high,False)
 
 
-#plt.plot(xspace, x_high)
+sol_low = tk(R,L2,np.logspace(-15,-12,20)[np.argmin(err_low)],x_low,False)[0]/2.0
+sol_med = tk(R,L2,np.logspace(-10,-5,30)[np.argmin(err_med)],x_med,False)[0]/2.0
+sol_high = tk(R,L2,np.logspace(-10,-3,30)[np.argmin(err_high)],x_high,False)[0]/2.0
+
+fig = plt.figure(figsize=(10,5))
+gs = plt.GridSpec(nrows=3, ncols=2,hspace=.5,wspace=.2)
+ax1 = fig.add_subplot(gs[0, 0])
+ax2 = fig.add_subplot(gs[0, 1])
+
+ax3= fig.add_subplot(gs[1, 0])
+ax4 = fig.add_subplot(gs[1, 1])
+
+ax5= fig.add_subplot(gs[2, 0])
+ax6 = fig.add_subplot(gs[2, 1])
+
+ax1.semilogy(xspace,x_low)
+ax3.semilogy(xspace,x_med)
+ax5.semilogy(xspace,x_high)
+
+ax2.plot(espace,e_low)
+ax2.plot(espace,sol_low)
+
+ax4.plot(espace,e_med)
+ax4.plot(espace,sol_med)
+
+ax6.plot(espace,e_high)
+ax6.plot(espace,sol_high)
+
 
 
 
