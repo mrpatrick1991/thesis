@@ -306,5 +306,14 @@ Second-order Tikhonov regularization uses a linear operator which approximates t
 
 This operator introduces a preference for smooth solutions. There is an intuitive reason why using this operator for the X-ray inversion problem might be useful - as the noise in the measured X-ray spectrum increases, the number of features detectable in the model electron spectrum will go down. A relevant example would be an electron spectrum which is well-described by two beams at different energies. For low noise levels in the corresponding measured X-ray spectrum, the two beams can be resolved through direct inversion, without applying regularization. As the noise in the measured spectrum is increased, second-order regularization will dull and blend the two sharp peaks until eventually they are not distinguishable.  This is a desirable property, since the bias tends towards solutions which reflect the lack of information a high noise measurement represents. This is illustrated in Figure~\ref{two_peak_second_order_example}.
 
-Another argument for applying second-order Tikhonov regularization to the X-ray inversion problem is that completely sharp, mono-energetic features don't appear in natural electron spectra. Thermal processes tend to relax such distributions to have a characteristic width, and over a long enough time period, the central limit theorem tends towards Gaussian distributions regardless. Since sharp solutions aren't generally expected, it makes sense to choose $\mathbf{L}$ such that they are penalized. This represents further injection of a-priori information to the problem.  
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/two_peak_second_order_example/fig.pdf}
+    \caption{Application of second-order Tikhonov regularization to synthetic X-ray measurements corresponding to two mono-energetic electron beams at different X-ray fluxes and noise levels (A - $10^7$ electrons / sec / keV, B - $10^6$ electrons / sec / keV, C - $5\times10^5$ electrons / sec / keV)}
+    \label{two_peak_second_order_example}
+\end{figure}
+\newpage
+\section{Higher Order Regularization}
+
+Another argument for applying second-order Tikhonov regularization to the X-ray inversion problem is that completely sharp, mono-energetic features aren't realistic in natural electron spectra. Thermal processes tend to relax such distributions to have a characteristic width, and over a long enough time period, the central limit theorem tends them towards Gaussian distributions regardless. Since sharp solutions aren't generally expected, it makes sense to choose $\mathbf{L}$ such that they are penalized. This represents further injection of a-priori information to the problem.  
 
