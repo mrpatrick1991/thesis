@@ -375,12 +375,12 @@ From a computational perspective, the ``ideal'' matrix representing the X-ray in
 
 One classic left-preconditioner is called diagonal scaling. For this preconditioner, a diagonal matrix is constructed such that the entries are equal to the inverse of the norm of the rows of the target matrix. This has the effect of making the row norms of the transformed matrix closer together. Figure~\ref{matrix_spectral_plot} (bottom) shows the effect of applying this preconditioner. The row norms and the spectra of singular values span fewer orders of magnitude. For this example, diagonal scaling has improved the response condition number from a value of $1.6\times10^4$ to $1.3\times10^4$. This is not a big change, at least not large enough to see a significant difference in the degree of regularization required to stabilize the X-ray inversion problem, but it is a reduction, and it motivates a search for other, perhaps more effective, preconditioners to use. 
 
-The effect of the diagonal scaling preconditoner can also be seen across different binning schemes on the X-ray response matrix. The effect is not constant across binning schemes. This is shown in Figure~\ref{
+The effect of the diagonal scaling preconditoner can also be seen across different binning schemes on the X-ray response matrix. The effect is not constant across binning schemes. This is shown in Figure~\ref{matrix_spectral_plot_diagonal_scaling}.
 
-\begin{figure}[p]
+\begin{figure}[h]
     \centering
     \includegraphics[width=1.1\textwidth]{figures/chapter_4/condition_number_binning_diagonal_scaling/fig.pdf}
-    \caption{(left): Graph of the rows of the X-ray response matrix. A high degree of co-linearity is apparent, as with a large scale change between rows. (right): Graph of the singular values of the X-ray response matrix, from largest to smallest. }
-    \label{matrix_spectral_plot}
+    \caption{(top): Contour plot of the condition number of the X-ray response matrix as a function of electron spectrum and X-ray spectrom bin widths, with no preconditioner. (bottom): Same contour plot with diagonal scaling preconditioner applied.}
+    \label{matrix_spectral_plot_diagonal_scaling}
 \end{figure}
 
