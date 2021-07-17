@@ -313,7 +313,56 @@ This operator introduces a preference for smooth solutions. There is an intuitiv
     \label{two_peak_second_order_example}
 \end{figure}
 \newpage
-\section{Higher Order Regularization}
 
-Another argument for applying second-order Tikhonov regularization to the X-ray inversion problem is that completely sharp, mono-energetic features aren't realistic in natural electron spectra. Thermal processes tend to relax such distributions to have a characteristic width, and over a long enough time period, the central limit theorem tends them towards Gaussian distributions regardless. Since sharp solutions aren't generally expected, it makes sense to choose $\mathbf{L}$ such that they are penalized. This represents further injection of a-priori information to the problem.  
+An additional argument for applying second-order Tikhonov regularization to the X-ray inversion problem is that completely sharp, mono-energetic features aren't realistic in natural electron spectra. Thermal processes tend to relax such distributions to have a characteristic width, and over a long enough time period, the central limit theorem tends them towards Gaussian distributions regardless. Since sharp solutions aren't generally expected, it makes sense to choose $\mathbf{L}$ such that they are penalized. This represents further injection of a-priori information to the problem.  
+
+\section{Constraints and Preconditioning}
+
+The application of regularization techniques makes the X-ray inversion problem tractable, with realistic and imperfectly measured input data. In using a biased estimator, we have replaced an impossible linear problem with a condition number approaching $10^{10}$, with a nearby problem that is better behaved. The cost of this is an artificial tendency towards families of solutions influenced by a-priori information, such as smooth solutions, for second-order Tikhonov regularization. The effect of this bias increases with noise in the input data. In this section, we explore methods which can be used to apply simplifying transformations to the X-ray inversion problem prior to the regularization process. Provided that the transformations applied have an inverse, they can be used to re-cast the X-ray inversion problem as an equivalent linear problem in a different space. If the transformations applied are chosen carefully, the equivalent problem can have a condition number which is significantly reduced. This reduces the amount of regularization that needs to be applied for stability, or equivalently, allows more information to be obtained from noisy measurement data. 
+
+As a motivating example, take the linear problem $\mathbf{A}\mathbf{x} = \mathbf{b}$, with $\mathbf{A}$ defined as:
+
+\[
+\mathbf{A} = \begin{bmatrix} 
+    .0001 & 1.0001 & 0 \\
+    0 & 1 & 0 \\
+    0 & 0 & 1
+    \end{bmatrix}
+\].
+
+The condition number of $\mathbf{A}$ is approximately $2.0\times10^{4}$. Instead of calculating $\mathbf{A}^{-1}$, first left and right multiply by linear transformation:
+
+\[
+\mathbf{L} = \begin{bmatrix} 
+    100 & 0 & 0  \\
+    0 & 1  & 0 \\
+    0 & 0 & 0
+    \end{bmatrix}
+\].
+
+The new matrix is:
+
+\[
+\mathbf{\tilde{A}} = \begin{bmatrix} 
+    1 & 100.01 & 0  \\
+    0 & 1  & 0 \\
+    0 & 0 & 1
+    \end{bmatrix}
+\].
+
+with a condition number of $1.0\times10^{4}$. The corresponding transformation can be applied to $\mathbf{b}$ to obtain the solution, $\mathbf{x}$, of the original problem. This preconditioning can be applied before using regularization methods, reducing the amount of regularization required for stability with a  particular problem and data set. 
+
+In general the left and right-multiplication can be done using different matrices. Label the left preconditioner $\mathbf{L}$ and the right preconditioner $\mathbf{R}$. The linear problem:
+
+$$\mathbf{A}\mathbf{x} = \mathbf{b}$$
+
+can then be recast as:
+
+$$(\mathbf{L}\mathbf{A}\mathbf{R}^{-1}\mathbf{R})\mathbf{x} = \mathbf{L}\mathbf{b}.$$
+
+Since the X-ray inversion problem is linear, there is no inherent cost to applying preconditioning methods before solutions are found. Provided matrices $\mathbf{L}$ and $\mathbf{R}$ are not singular, the solution to the original problem can be recovered. 
+
+There is no known general method to determine optimal values for $\mathbf{L}$ and $\mathbf{R}$. There are some specific cases, such as for symmetric matrices, where techniques exist, but the matrix which describes the X-ray inversion problem does not fall into any of these categories. This problem makes finding an appropriate preconditioner for the X-ray inversion problem non-trivial. We will try different combinations of known preconditioners, and stop when a selection is found that significantly reduces the condition number of the problem. 
+
+From a computational perspective, the ``ideal'' matrix representing the X-ray inversion problem would be the identity, with a condition number of one. Compared to the identity matrix, the real matrix representing the X-ray inversion problem has two main undesirable properties. The first is that the rows, which represent X-ray spectra from mono-energetic beams of electrons, have a high degree of col-linearity. This is the main cause of the high condition number of the matrix. The second problem is that the rows and columns have vastly different norms. This is because low energy beams of electrons do not penetrate far into the atmosphere, and their impact in terms of measurable X-rays is small. On the other hand, high energy beams of electrons need only have a small total particle flux to create a very large measurable X-ray response. Figure~\ref{} shows this for a particular binning scheme on the response matrix though graphs of its rows.
 
