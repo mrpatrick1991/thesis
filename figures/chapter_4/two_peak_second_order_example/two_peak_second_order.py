@@ -189,8 +189,8 @@ sol_low = tk(R,L2,np.logspace(-15,-12,20)[np.argmin(err_low)],x_low,False)[0]/2.
 sol_med = tk(R,L2,np.logspace(-10,-5,30)[np.argmin(err_med)],x_med,False)[0]/2.0
 sol_high = tk(R,L2,np.logspace(-10,-3,30)[np.argmin(err_high)],x_high,False)[0]/2.0
 
-fig = plt.figure(figsize=(10,5))
-gs = plt.GridSpec(nrows=3, ncols=2,hspace=.5,wspace=.2)
+fig = plt.figure(figsize=(10,7))
+gs = plt.GridSpec(nrows=3, ncols=2,hspace=.5,wspace=.345)
 ax1 = fig.add_subplot(gs[0, 0])
 ax2 = fig.add_subplot(gs[0, 1])
 
@@ -204,8 +204,9 @@ ax1.semilogy(xspace,x_low)
 ax3.semilogy(xspace,x_med)
 ax5.semilogy(xspace,x_high)
 
-ax2.plot(espace,e_low)
-ax2.plot(espace,sol_low)
+ax2.plot(espace,e_low,label='Assumed')
+ax2.plot(espace,sol_low,label='Tikhonov')
+ax2.set_ylim([-1e6,1e7])
 
 ax4.plot(espace,e_med)
 ax4.plot(espace,sol_med)
@@ -213,10 +214,20 @@ ax4.plot(espace,sol_med)
 ax6.plot(espace,e_high)
 ax6.plot(espace,sol_high)
 
+ax1.set_title('X-ray Spectrum')
+ax5.set_ylabel('counts/s/keV')
+ax2.set_title('Electron Spectrum')
+ax6.set_ylabel('electrons/s/keV')
 
+ax5.set_xlabel('X-ray energy (keV)')
+ax6.set_xlabel('electron energy (keV)')
 
+ax1.text(480, 1e3, 'A', fontsize=15)
+ax3.text(480, 1e2, 'B', fontsize=15)
+ax5.text(480, 1e1, 'C', fontsize=15)
 
+ax2.legend()
 
-
+plt.savefig('fig.pdf')
 
 
