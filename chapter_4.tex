@@ -377,10 +377,11 @@ One classic left-preconditioner is called diagonal scaling. For this preconditio
 
 The effect of the diagonal scaling preconditoner can also be seen across different binning schemes on the X-ray response matrix. The effect is not constant across binning schemes. This is shown in Figure~\ref{matrix_spectral_plot_diagonal_scaling}.
 
-\begin{figure}[h]
+\begin{figure}[p]
     \centering
-    \includegraphics[width=.5\textwidth]{figures/chapter_4/condition_number_binning_diagonal_scaling/fig.pdf}
-    \caption{(top): Contour plot of the condition number of the X-ray response matrix as a function of electron spectrum and X-ray spectrom bin widths, with no preconditioner. (bottom): Same contour plot with diagonal scaling preconditioner applied.}
+    \includegraphics[width=.8\textwidth]{figures/chapter_4/condition_number_binning_diagonal_scaling/fig.pdf}
+    \caption{(top): Contour plot of the condition number of the X-ray response matrix as a function of electron spectrum and X-ray spectrum bin widths, with no preconditioner. (bottom): The same contour plot with diagonal scaling preconditioner applied.}
     \label{matrix_spectral_plot_diagonal_scaling}
 \end{figure}
 
+Calculating the condition number of a matrix requires computing the singular value decomposition, which is a well known and optimized process and can be done very quickly on modern computers. As an experiment, we can think of the condition number as a function of the diagonal entries of the preconditioning matrix and attempt to minimize it, using, for example, a conjugate gradient search. Despite the fact that this represents a problem with many dimensions, this simple idea can produce a right preconditioner which is effective. An example of the application of this process is shown in Figure~\ref{}. 
