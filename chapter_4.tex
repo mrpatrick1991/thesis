@@ -397,11 +397,27 @@ It is clear that there are different matrices that can be selected to improve th
 
 Choosing left and right preconditioning through optimization techniques generally works to reduce the condition number of the problem, but there are opportunities for it to fail, such as the numerical optimizer failing to converge. Additionally, there is a risk that the optimization adjusts preconditioning based on noise in the response matrix, which is generated through simulations, rather than the inherent shape of the response curves the matrix contains. This can be seen to an extent in the lower energy limit in Figure~\ref{optimized_left_preconditioner}. The danger with this effect is that the collinearity of the component vectors of the response matrix is reduced only for synthetic data generated with the same response matrix. Real experimental data will not benefit from this reduced collinearity, since their noise statistics are independent of the response matrix. 
 
-An intuitive and useful pair of left and right preconditioners for the X-ray inversion problem can be created based on the observation that the response matrix is poorly scaled in both rows and columns. This is illustrated in Figure~\ref{matrix_scaling_plot}, which shows that the row and column norms differ through orders of magnitude across the response matrix. Motivated by this, we will try a left preconditioner which re-scales the rows of the response matrix, and a right-preconditioner which re-scales the columns. Both will be constructed as diagonal matrices, with dimensions compatibly with the response matrix for a given binning scheme. The diagonal entries of the left and right preconditioning matrices will be the inverse of the row, and column norms of the response matrix, respectively. The effect of left and right preconditioning by these matrices on the response matrix is shown in Figure~\ref{matrix_scaling_plot_transformed}. 
+An intuitive and useful pair of left and right preconditioners for the X-ray inversion problem can be created based on the observation that the response matrix is poorly scaled in both rows and columns. This is illustrated in Figure~\ref{matrix_scaling_plot}, which shows that the row and column norms differ through orders of magnitude across the response matrix. Motivated by this, we will try a left preconditioner which re-scales the rows of the response matrix, and a right-preconditioner which re-scales the columns. Both will be constructed as diagonal matrices, with dimensions compatibly with the response matrix for a given binning scheme. The diagonal entries of the left and right preconditioning matrices will be the inverse of the row, and column norms of the response matrix, respectively. The effect of left and right preconditioning by these matrices on the response matrix is shown in Figure~\ref{matrix_scaling_plot_transformed}.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/matrix_scaling_plot/fig.pdf}
+    \caption{Response matrix for the X-ray inversion problem. Scale differences across both rows and columns of the matrix contribute to the high condition number. Units are normalized per incident electron.}
+    \label{matrix_scaling_plot}
+\end{figure}
 
 \begin{figure}[p]
     \centering
     \includegraphics[width=1.1\textwidth]{figures/chapter_4/matrix_scaling_plot/fig1.pdf}
-    \caption{Response matrix for the X-ray inversion problem. Scale differences across both rows and columns of the matrix contribute to the high condition number. Units are normalized per incident electron. }
+    \caption{Response matrix for the X-ray inversion problem with left and right preconditioners applied. Scale differences across both rows and columns of the matrix have been reduced, improving the condition number.}
     \label{matrix_scaling_plot_transformed}
+\end{figure}
+
+The effect of this preconditioning is dramatic. In Figure~\ref{condition_number_binning}, the condition number of the response matrix was shown as a function of X-ray and electron spectrum bin-width. This is reproduced in Figure~\ref{condition_number_binning_withprecondition}. 
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/condition/fig1.pdf}
+    \caption{Response matrix for the X-ray inversion problem with left and right preconditioners applied. Scale differences across both rows and columns of the matrix have been reduced, improving the condition number.}
+    \label{condition_number_binning_withprecondition}
 \end{figure}
