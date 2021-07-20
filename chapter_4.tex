@@ -49,7 +49,7 @@ is large for small changes in the kernel function $\delta f$ and input data $\de
 \caption{(top): Example of three different assumed electron energy spectra (mono-energetic, exponentially decreasing, and gaussian) for a precipitating electron flux of $1\times10^9$ electrons per $\mbox{cm}^2$ per second. (bottom): Resulting simulated X-ray spectra for each electron spectrum, using the methods developed in Chapter 3.} 
 \end{figure}
 
-\section{Framing the Inversion Problem}
+\section{Framing the Inverse Problem}
 
 The forward problem of determining instrument responses from electron precipitation events is linear, and can be written as:
 
@@ -394,3 +394,14 @@ Calculating the condition number of a matrix requires computing the singular val
 \end{figure}
 
 It is clear that there are different matrices that can be selected to improve the condition of the X-ray inversion problem. Since one can generally expect to lose $k$ digits of precision for a linear problem with a condition number of $10^k$, the search for an optimal preconditioner for the problem at hand isn't very sensitive. Significant benefits will only be returned if order of magnitude improvements in the condition number can be found. This can be achieved through regularization, but comes at the cost of a bias which is difficult to quantify. Because of this, the best approach to the X-ray inversion problem is a combination of left and right preconditioners, chosen optimally for a given selected binning scheme, combined with a regularization method. This dual approach obtains the full benefit of any preconditioners, with the stability, at a cost, which regularization provides. Since the regularization techniques are adaptive to both the noise in the measurement data and the inherent conditioning of the problem, the result is that regularization is used ``as little as possible'', to obtain stability in the solution. 
+
+Choosing left and right preconditioning through optimization techniques generally works to reduce the condition number of the problem, but there are opportunities for it to fail, such as the numerical optimizer failing to converge. Additionally, there is a risk that the optimization adjusts preconditioning based on noise in the response matrix, which is generated through simulations, rather than the inherent shape of the response curves the matrix contains. This can be seen to an extent in the lower energy limit in Figure~\ref{optimized_left_preconditioner}. The danger with this effect is that the collinearity of the component vectors of the response matrix is reduced only for synthetic data generated with the same response matrix. Real experimental data will not benefit from this reduced collinearity, since their noise statistics are independent of the response matrix. 
+
+An intuitive and useful pair of left and right preconditioners for the X-ray inversion problem can be created based on the observation that the response matrix is poorly scaled in both rows and columns. This is illustrated in Figure~\ref{matrix_scaling_plot}, which shows that the row and column norms differ through orders of magnitude across the response matrix.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/matrix_scaling_plot/fig.pdf}
+    \caption{}
+    \label{matrix_scaling_plot}
+\end{figure}
