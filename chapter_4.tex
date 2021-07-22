@@ -316,7 +316,7 @@ This operator introduces a preference for smooth solutions. There is an intuitiv
 
 An additional argument for applying second-order Tikhonov regularization to the X-ray inversion problem is that completely sharp, mono-energetic features aren't realistic in natural electron spectra. Thermal processes tend to relax such distributions to have a characteristic width, and over a long enough time period, the central limit theorem tends them towards Gaussian distributions regardless. Since sharp solutions aren't generally expected, it makes sense to choose $\mathbf{L}$ such that they are penalized. This represents further injection of a-priori information to the problem.  
 
-\section{Constraints and Preconditioning}
+\section{Preconditioning Techniques}
 
 The application of regularization techniques makes the X-ray inversion problem tractable, with realistic and imperfectly measured input data. In using a biased estimator, we have replaced an impossible linear problem with a condition number approaching $10^{10}$, with a nearby problem that is better behaved. The cost of this is an artificial tendency towards families of solutions influenced by a-priori information, such as smooth solutions, for second-order Tikhonov regularization. The effect of this bias increases with noise in the input data. In this section, we explore methods which can be used to apply simplifying transformations to the X-ray inversion problem prior to the regularization process. Provided that the transformations applied have an inverse, they can be used to re-cast the X-ray inversion problem as an equivalent linear problem in a different space. If the transformations applied are chosen carefully, the equivalent problem can have a condition number which is significantly reduced. This reduces the amount of regularization that needs to be applied for stability, or equivalently, allows more information to be obtained from noisy measurement data. 
 
@@ -409,15 +409,29 @@ An intuitive and useful pair of left and right preconditioners for the X-ray inv
 \begin{figure}[p]
     \centering
     \includegraphics[width=1.1\textwidth]{figures/chapter_4/matrix_scaling_plot/fig1.pdf}
-    \caption{Response matrix for the X-ray inversion problem with left and right preconditioners applied. Scale differences across both rows and columns of the matrix have been reduced, improving the condition number.}
+    \caption{Response matrix for the X-ray inversion problem with left and right preconditioners applied. Scale differences across both rows and columns of the matrix have been reduced, improving the condition number. The units on the color axis are no longer physical, having been scaled by the preconditioning matrices.}
     \label{matrix_scaling_plot_transformed}
 \end{figure}
 
-The effect of this preconditioning is dramatic. In Figure~\ref{condition_number_binning}, the condition number of the response matrix was shown as a function of X-ray and electron spectrum bin-width. This is reproduced in Figure~\ref{condition_number_binning_withprecondition}. 
+The effect of this preconditioning is dramatic. In Figure~\ref{condition_number_binning}, the condition number of the response matrix was shown as a function of X-ray and electron spectrum bin-width. This is reproduced in Figure~\ref{condition_number_binning_withprecondition} for different combinations of these left and right preconditioners. As with the case with no preconditioning, there is a set of binning schemes where the response matrix becomes singular. When preconditioning is applied, however, the sensitivity of the problem to the binning scheme chosen is reduced. This effect is strongest when both the left and right preconditioners are applied. Surprisingly, even though the preconditioners chosen are simple diagonal matrices formed based on intuition, for sensible binning schemes, the X-ray inversion problem becomes completely tractable. This is in contrast to the situation before, where even the coarsest binning schemes produced an inverse problem so ill-conditioned that only the strongest regularization methods could provide stability. As before, this reconditioning comes without introduced bias, and numerically, costs only calculating multiplications and inverses of the preconditioning matrices to transform back to physical units. 
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=1.1\textwidth]{figures/chapter_4/condition/fig1.pdf}
-    \caption{Response matrix for the X-ray inversion problem with left and right preconditioners applied. Scale differences across both rows and columns of the matrix have been reduced, improving the condition number.}
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/condition_number_binning_precondition/fig.pdf}
+    \caption{Response matrix condition numbers as a function of X-ray and electron spectrum bin widths for: (A) - no preconditioning, (B) - left scaling preconditioner only, (C) - right preconditioner only, (D) - both left and right preconditioners. }
     \label{condition_number_binning_withprecondition}
 \end{figure}
+
+\section{Constrained Optimization}
+
+The fact that physical spectra are everywhere positive can easily be applied as a constraint to reduce the solution space of the X-ray inversion problem. Direct inversion, truncated singular value decomposition, and Tikhonov regularization can all be framed as a least-squares optimization problem. Numerical constraints on these problems, especially positivity constraints, are well-known and solves are included in most modern computer algebra systems. There are two primary reasons for imposing positivity constraints on solutions:
+
+\begin{enumerate}
+    \item Since spectra with negative components are non-physical, the interpretation of the negative regions is unclear. Simple approaches, such as setting them to zero, or taking the absolute value, are almost always misleading. \item Reducing the solution space improves the conditioning of the overall problem.
+\end{enumerate}
+
+The first reason exposes a hidden danger when applying preconditioning transformations. The response matrix has a simple physical interpretation, since it maps from the space of electron spectra to the space of X-ray spectra. This interpretation is lost after preconditioning transformations are applied. Although all the same information is contained in the better-conditioned, transformed, matrix, it is stretched and distorted to a degree which is difficult to visualize. This means that a ``small'' negative region in the preconditioned solution might be significant when mapped back to physical units. 
+
+Fast, constrained optimization is achievable through many techniques. For the particular case of non-negative least-squares optimization, the venerable LAPACK FORTRAN routines have been wrapped and made available in most modern programming languages. These routines are extremely fast, and since the X-ray inversion problem has a small (less than a million) entries in the matrices which encode it, the addition of a non-negativity constraint adds almost no computation time. 
+Figure~\ref{why_non_negative_is_good} shows an example of synthetic X-ray spectrum corresponding to an exponential electron distribution. The X-ray spectrum is generated at noise levels consistent with different electron fluxes, and an inversion is attempted in each case both with, and without, the non-negativity constraint applied. The left and right-preconditioners from the last section are used with second order tikhonov regularization to compute the assumed electron spectrum from the data. 
+
