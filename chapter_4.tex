@@ -433,5 +433,11 @@ The fact that physical spectra are everywhere positive can easily be applied as 
 The first reason exposes a hidden danger when applying preconditioning transformations. The response matrix has a simple physical interpretation, since it maps from the space of electron spectra to the space of X-ray spectra. This interpretation is lost after preconditioning transformations are applied. Although all the same information is contained in the better-conditioned, transformed, matrix, it is stretched and distorted to a degree which is difficult to visualize. This means that a ``small'' negative region in the preconditioned solution might be significant when mapped back to physical units. 
 
 Fast, constrained optimization is achievable through many techniques. For the particular case of non-negative least-squares optimization, the venerable LAPACK FORTRAN routines have been wrapped and made available in most modern programming languages. These routines are extremely fast, and since the X-ray inversion problem has a small (less than a million) entries in the matrices which encode it, the addition of a non-negativity constraint adds almost no computation time. 
-Figure~\ref{why_non_negative_is_good} shows an example of synthetic X-ray spectrum corresponding to an exponential electron distribution. The X-ray spectrum is generated at noise levels consistent with different electron fluxes, and an inversion is attempted in each case both with, and without, the non-negativity constraint applied. The left and right-preconditioners from the last section are used with second order tikhonov regularization to compute the assumed electron spectrum from the data. 
+Figure~\ref{why_non_negative_is_good} shows an example of synthetic X-ray spectrum corresponding to an exponential electron distribution. The X-ray spectrum is generated at noise levels consistent with different electron fluxes, and an inversion is attempted in each case with the non-negativity constraint applied. The left and right-preconditioners from the last section are used with second order tikhonov regularization to compute the assumed electron spectrum from the data. 
 
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=1.3\textwidth]{figures/chapter_4/why_non_negative_is_good/fig.pdf}
+    \caption{}
+    \label{why_non_negative_is_good}
+\end{figure}
