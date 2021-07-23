@@ -79,7 +79,7 @@ Figure~\ref{condition_number_binning} shows that there is a significant set of b
 
 The direct inversion attempts in Figure~\ref{direct_inversion_example} are an example of a fundamental trade-off encountered when solving inverse problems. Because the information contained in the available measurements is subset to the information contained in the physical event being studied, the best solution, in terms of minimizing residuals between predictions of the resulting model and the data, often has a high variance and contains little useful information. This corresponds to case (A) in Figure~\ref{direct_inversion_example}, where the electron spectrum bin widths are small enough that the model obtained is mostly random noise. On the other hand, choosing wide bin widths as in case (C) can leave relevant information contained in the measurements out of the model, so that while the variance in the solution is low, the model is still not descriptive of the event being studied. This trade-off can be handled through optimization techniques.
 
-\section{Synthetic Data}
+\section{Creating Synthetic Data}
 
 The evaluation of techniques to solve inverse problems often depends on the use of synthetically generated, or simulated, data which correspond to solutions which are already known. For the X-ray inversion problem, synthetic data are readily generated using the monte-carlo techniques discussed in Chapter~3. Since the forward problem is linear, X-ray spectra can be generated which correspond to arbitrary electron spectra using a Greens function approach at little computational expense. This represents a power which can be exploited in the analysis of the problem at hand.  
 
@@ -437,7 +437,21 @@ Figure~\ref{why_non_negative_is_good} shows an example of synthetic X-ray spectr
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=1.3\textwidth]{figures/chapter_4/why_non_negative_is_good/fig.pdf}
-    \caption{}
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/why_non_negative_is_good/fig.pdf}
+    \caption{Retrieval of electron spectra from synthetic X-ray data across different simulated count rates. Left and right
+    preconditioners, second-order regularization, and a non-negativity constraint are applied.}
     \label{why_non_negative_is_good}
 \end{figure}
+
+\section{Evaluation on Synthetic Data}
+
+The techniques developed so far have taken a difficult inverse problem and transformed it into a more tractable version. Preconditioning though linear transformations reduces the condition number of the problem dramatically, and the subsequent application of second-order regularization provides the rest of the needed stability to the problem. The bias introduced by regularization techniques, which is difficult to quantify, has been kept to a minimum through preconditioning and cross-validation, and chosen so as to gradually relax to smooth solutions in scenarios with high measurement noise. The addition of a non-negativity constraint ensures that solutions are always physical, by construction. What remains is to generate a body of test data and demonstrate that the combination of these techniques generates models which describe the assumed spectra in the test data well. The approach taken will be two-fold. First, simulated data for a set of different plausible forms for precipitating electron spectra will be generated, and then iterated over their respective parameter spaces. Results will be shown in plots to motivate an understanding of the behaviour of the inversion method, and different properties, such as non-negativity constraints, will be turned off an on to see changes in relative performance. Second, a large set of simulated data will be randomly generated, and the inversion method will be run and scored in aggregate based on the normalized mean squared error. The average mean-squared error in inversions across this data set will be used as a metric to show the positive effects of different properties of the inversion method.   
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/why_non_negative_is_good/fig.pdf}
+    \caption{Retrieval of electron spectra from synthetic X-ray data across different simulated count rates. Left and right
+    preconditioners, second-order regularization, and a non-negativity constraint are applied.}
+    \label{why_non_negative_is_good}
+\end{figure}
+
