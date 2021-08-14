@@ -495,4 +495,19 @@ The techniques developed so far have taken a difficult inverse problem and trans
     \label{synthetic_data_gauss}
 \end{figure}
 
+\begin{figure}[p]
+    \centering
+    \vspace{-1cm}
+    \includegraphics[width=1.1\textwidth]{figures/chapter_4/synthetic_data_mono/fig_mono.pdf}
+    \caption{Retrieval of monoenergetic electron spectra from synthetic X-ray data across different simulated count rates. Second order Tikhonov regularization, with and without non-negativity constraints, and zeroth order Tikhonov regularization are applied. Regularization strengths are chosen through cross validation.}
+    \label{synthetic_data_gauss}
+\end{figure}
+
+\newpage
+
+The data evaluated so far are based on a hypothesis about the types of electron spectra which might exist in nature. In reality, outside the basic constraints which have been discussed so far (positivity, smoothness), and in the absence of additional information, the spectra can have any form. In order to see how the inversion method designed in this chapter performs in general, a large body of synthetic data needs to be created, which extends the test models evaluated in the preceding figures.
+
+There is a decision which has to be made about the amount of structure contained in the test spectra. A test electron spectra which consists entirely of random noise contains little useful information, and the methods used to retrieve it from simulated data will reflect this. On the other hand, a test spectrum with little structure and very smooth features will represent an ``easy'' test case for the inversion methods. Since the aim is to evaluate inversion methods with the smallest possible number of assumptions on the source electron spectra, we will assign a parameter to the body of generated test data which will correspond to the amount of structure contained. 
+
+A set of random electron spectra is generated, and a low-pass filter is applied with a randomly selected cutoff frequency. The distributions for each bin in the random spectra are uniform, as is the distribution for the selected cutoff frequency. Measurement noise which is consistent with a randomly selected total count rate is added to the synthetic X-ray data. The total integrated counts chosen are uniformly distributed in powers of 10, from $10^5$ to $10^9$, which roughly represent the possible measurement range of the real data. 
 
