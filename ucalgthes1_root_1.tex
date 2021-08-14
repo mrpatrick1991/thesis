@@ -1,52 +1,24 @@
-%% Modified documentstyle to documentclass -- compatibility with LaTex2e
-%% N. Mancell (98/03/01).
-
-%%  ucalgthes_root.tex        (NM 98/03/01)
-%   Modified   92-09-18      Add references to dissertation        D. Teale
-%                            Add approval page to toc
-%                            Add ref to Title Degree on approval page
-%   Modified  2006-09-12     Added geometry package to set up UofC thesis margins
-%                            Removed includeprompt option N. Mancell
-%
-% Modified  2012-04-15  T.Zhang
-% 1, the ÔfancyÕ package is cancelled. The pagestyle is changed from ÔmyheadingsÕ and ÔheadingsÕ to ÔplainÕ to move the page number (footer) from top right to bottom centre.
-% 2, The parameter  of using ÔgeometryÕ package is changed from four different values (top=1in, bottom=1.22in, left=1.40in, right=0.850in) to one single value: 1in (top=1in, bottom= 1in, left= 1in, right= 1in)
-% 3, ÔList of FiguresÕ is modified to ÔList of Figures and IllustrationsÕ
-% 4, A new page ÔList of Symbols, Abbreviations and NomenclatureÕ is created. Its page number is following ÔList of Figures and IllustrationsÕ with Roman numerals. A separate file Ôsymbols.texÕ is created for students to put content into the list.
-
-
-
-
-
 \documentclass[12pt]{ucalgthes1}
 \usepackage[letterpaper,top=1in, bottom= 1in, left= 1in, right= 1in]{geometry}
-%\usepackage{fancyhdr}
-%\fancyhead{}
-%\fancyfoot{}
-%\renewcommand{\headrulewidth}{0pt}
-%\fancyhead[RO,LE]{\thepage}
-%Define other usepackages here
+
 \usepackage{hyperref}
 \usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{amsmath}
+
 \graphicspath{ {./figures/} }
 \usepackage{mathptmx}
 \title{Energetic Electron Precipitation Measurements from High Altitude Platforms\\ \bigskip
  }
-%
-%            Insert the correct information between the {}
-%
+
 \author{Matthew Patrick}
 \thesisyear{2021}
-\thesis{thesis}    % the word dissertation can be inserted between {}
+\thesis{thesis}
 \newcommand{\thesistitle}{Title of Thesis}
 \monthname{April}
 \dept{SPACE PHYSICS}
 \degree{DOCTOR OF PHILOSOPHY}
-%
-%                    End of supplied information
-%
+
 \begin{document}
 \makethesistitle
 \pagenumbering{roman}     % resets page counter to one
@@ -121,7 +93,7 @@ Paragraph 3
 \listoffigures
 \pagestyle{plain}
 \clearpage
-\clearpage          % otherwise tables will be numbered wrong
+\clearpage          
 \end{singlespace}
 \newpage
 \phantomsection
@@ -129,7 +101,6 @@ Paragraph 3
 \listofsymbols
 \pagestyle{plain}
 \clearpage
-
 
 \pagenumbering{arabic}
 \include{chapter_4}
