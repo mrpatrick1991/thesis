@@ -1,10 +1,8 @@
-%\fancyhead[RO,LE]{\thepage}
-%\fancyfoot{}
 \chapter{The Inverse Problem}
 
-\section{Geophysical Inverse Problems}
+\section{Definition and Properties}
 
-In this chapter the problem of obtaining information about the causative electron precipitation directly from X-ray measurements will be examined. We will term this the ``X-ray inversion problem.'' This type of analysis belongs to the broad class of what are called inverse problems, which attempt to reconstruct physical events based on limited measurement data.  A classic example of such an inverse problem is the determination of media velocities within the Earth based on seismic measurements. The forward problem of predicting instrument responses based on an assumed physical event can be handled by, for example, computer simulations, as was done in the last chapter for the problem of predicting the measured X-ray distributions which result from a given electron precipitation event. As a general rule, inverse problems have certain mathematical properties which make them difficult to solve. We will show the reasons for this, and measures which can be taken to mitigate these effects in this section.
+In this chapter the problem of obtaining information about the causative electron precipitation directly from X-ray measurements will be examined. We will term this the ``X-ray inversion problem.'' This type of analysis belongs to a broad class of what are called inverse problems, which attempt to reconstruct physical events based on limited measurement data.  A classic example of such an inverse problem is the determination of media velocities within the Earth based on seismic measurements at discrete points. The ``forward problem'' of predicting instrument responses based on an assumed physical event can be handled by, for example, computer simulations, as was done in the last chapter for the problem of predicting the measured X-ray distributions which result from a given electron precipitation event. As a general rule, inverse problems have mathematical properties which make them difficult or impossible to solve without applying significant a-priori assumptions to the solution. For the X-ray inversion problem, we will show the reasons for this, and demonstrate some measures which can be taken to mitigate these effects.
 
 Define the forward problem by the mapping:
 
@@ -18,7 +16,7 @@ where $\mathbf{D}$ is the space containing data from measurements, and $\mathbf{
 \mathbf{F^{-1}}:\mathbf{D} \rightarrow \mathbf{M}
 \end{equation}
 
- Knowledge of the mapping $\mathbf{F}$ may be incomplete, or based on uncertain experimental data. To describe the challenges associated with inverse problems precisely some definitions are needed.
+ In addition to the measurements $\mathbf{D}$, knowledge of the mapping $\mathbf{F}$ may be incomplete, or based on uncertain experimental data. To describe the challenges associated with inverse problems precisely some definitions are needed.
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
