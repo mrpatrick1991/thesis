@@ -2,7 +2,7 @@
 
 \section{Definition and Properties}
 
-In this chapter the problem of obtaining information about the causative electron precipitation directly from X-ray measurements will be examined. We will term this the ``X-ray inversion problem.'' This type of analysis belongs to a broad class of what are called inverse problems, which attempt to reconstruct physical events based on limited measurement data.  A classic example of such an inverse problem is the determination of media velocities within the Earth based on seismic measurements at discrete points. The ``forward problem'' of predicting instrument responses based on an assumed physical event can be handled by, for example, computer simulations, as was done in the last chapter for the problem of predicting the measured X-ray distributions which result from a given electron precipitation event. As a general rule, inverse problems have mathematical properties which make them difficult or impossible to solve without applying significant a-priori assumptions to the solution. For the X-ray inversion problem, we will show the reasons for this, and demonstrate some measures which can be taken to mitigate these effects.
+In this chapter the problem of obtaining information about the causative electron precipitation directly from X-ray measurements will be examined. We will term this the ``X-ray inversion problem.'' This type of analysis belongs to a broad class of what are called inverse problems, which attempt to reconstruct physical events based on limited measurement data.  A classic example of an inverse problem is the determination of media velocities within the Earth based on seismic measurements at discrete points. The ``forward problem'' of predicting instrument responses based on an assumed physical event can be handled by, for example, computer simulations, as was done in the last chapter for the problem of predicting the measured X-ray distributions which result from a given electron precipitation event. Unlike forward problems, inverse problems have mathematical properties which make them difficult or impossible to solve without  significant a-priori assumptions. For the X-ray inversion problem, we will show the reasons for this, and demonstrate some measures which can be taken to mitigate these effects.
 
 Define the forward problem by the mapping:
 
@@ -10,18 +10,18 @@ Define the forward problem by the mapping:
 \mathbf{F}:\mathbf{M} \rightarrow \mathbf{D}
 \end{equation}
 
-where $\mathbf{D}$ is the space containing data from measurements, and $\mathbf{M}$ is the space of solutions, which we term models. The mapping $\mathbf{F}$ may be either linear, or non-linear. The inverse problem is:
+where $\mathbf{D}$ is the space containing data from measurements, and $\mathbf{M}$ is the space of models, or solutions. The mapping $\mathbf{F}$ may be either linear, or non-linear. Additionally, the definition of the model $\mathbf{M}$ is generally not unique~\cite{Tarantola2004}. For the forward problem, we start with an assumed model and evaluate its predictions against the available data. The metric by which this is done is another choice which may not be unique for the given problem. The inverse problem is:
 
 \begin{equation}
 \mathbf{F^{-1}}:\mathbf{D} \rightarrow \mathbf{M}
 \end{equation}
 
- In addition to the measurements $\mathbf{D}$, knowledge of the mapping $\mathbf{F}$ may be incomplete, or based on uncertain experimental data. To describe the challenges associated with inverse problems precisely some definitions are needed.
+ In addition to uncertainty in the measurements $\mathbf{D}$, knowledge of the mapping $\mathbf{F}$ may be incomplete, or based on uncertain experimental data or simulations. To describe the challenges associated with inverse problems some definitions are needed.
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 \begin{definition}[ill-posedness]
-A problem is ill-posed if it fails to have any of the following properties:
+A problem is ill-posed if it fails to have any of the following properties~\cite{HADAMARD1902} : 
 \begin{enumerate}
     \item A solution exists.
     \item The solution depends continuously on the input data.
@@ -29,81 +29,68 @@ A problem is ill-posed if it fails to have any of the following properties:
 \end{enumerate}
 \end{definition}
 
-Inverse problems are ill-posed as a general rule. This requires that we shift the analysis from a search for a particular solution, as with forward problems, towards a search for families of solutions, and methods of determining which produce the best description of the available data, often requiring the use of a-priori information about the problem at hand. Based on the results of the last chapter, the X-ray inversion problem certainly satisfies property 1, that a solution exists. The difficulties lie in the failure to satisfy properties 2 and 3. We will show that finding a unique solution to the X-ray inversion problem is, in most realistic cases, not possible. Another definition is needed to see why:
+Inverse problems are ill-posed as a general rule. This requires that we shift the analysis from a search for a particular solution, as with forward problems, towards a search for families of solutions, and methods of determining which produce the best description of the available data, often requiring the use of a-priori information about the particular problem at hand. Based on the results of the last chapter, the X-ray inversion problem certainly satisfies property 1, that a solution exists. The difficulties lie in its failure to satisfy properties 2 and 3. We will show that without special treatment, finding a unique solution to the X-ray inversion problem is, in most realistic cases, not possible. Another definition is needed to see why:
 
 \begin{definition}[ill-conditioning]
-A problem is ill conditioned if a small change in the input data results in a large change in the solution, that is, the condition number:
+A problem is ill conditioned if a small change in the input data results in a large change in the solution, that is, the condition number\cite{Altman2016}:
 
 $$\kappa = \lim_{\epsilon \to 0} \sup_{\vert\vert \delta x \vert \vert \leq \epsilon} \frac{\vert\vert \delta f \vert\vert}{\vert\vert \delta x \vert\vert}$$
 is large for small changes in the kernel function $\delta f$ and input data $\delta x$.
 \end{definition}
 
- The X-ray inversion problem is ill-conditioned. Figure~\ref{why_ill_conditioned} illustrates this by showing three different model precipitating electron spectra, and a simulation of their resulting X-ray spectra in log-linear space. A small change in the measured X-ray spectrum can result in a drastically different model electron spectrum. The treatment of this instability will be the main problem addressed in this chapter. 
+ The X-ray inversion problem is ill-conditioned. Figure~\ref{why_ill_conditioned} illustrates this by showing three different model precipitating electron spectra, and a simulation of their resulting X-ray spectra in log-linear space. A small change in the measured X-ray spectrum results in a drastically different model electron spectrum. The treatment of this instability will be the main problem addressed in this chapter. 
 
 \begin{figure}[p]
 \label{why_ill_conditioned}
 \centering
-\includegraphics[width=1.0\textwidth]{figures/chapter_4/why_ill_conditioned/fig.pdf}
-\caption{(top): Example of three different assumed electron energy spectra (mono-energetic, exponentially decreasing, and gaussian) for a precipitating electron flux of $1\times10^9$ electrons per $\mbox{cm}^2$ per second. (bottom): Resulting simulated X-ray spectra for each electron spectrum, using the methods developed in Chapter 3.} 
+\includegraphics[width=\textwidth]{figures/chapter_4/why_ill_conditioned/why_ill_conditioned.pdf}
+\caption{(Top): Example of three different assumed electron energy spectra (mono-energetic, exponentially decreasing, and gaussian) for a precipitating electron flux of $1\times10^9$ electrons per $\mbox{cm}^2$ per second. (Bottom): Resulting simulated X-ray spectra for each electron spectrum, using the methods developed in Chapter 3.} 
 \end{figure}
 
-\section{Framing the Inverse Problem}
+\section{Framing the X-ray Inversion Problem}
 
-The forward problem of determining instrument responses from electron precipitation events is linear, and can be written as:
+The forward problem of determining expected instrument responses from electron precipitation events is linear, and can be written as:
 
 $$\mathbf{G}\mathbf{m} = \mathbf{d}$$
 
-where $\mathbf{G}$ is a matrix representing the discretization of the kernel function mapping precipitating electron spectra $\mathbf{m}$ to resulting measurements of the X-ray spectra $\mathbf{d}$. Techniques for computationally determining $\mathbf{G}$ were discussed in the previous chapter. There is a result that allows the calculation of the condition number of $\mathbf{G}$ as the ratio of its maximal and minimal singular values. As a general rule, if a given linear problem has condition number $\kappa$, then we can expect to lose $10^\kappa$ digits of precision in calculating the solution. This is a best-case estimate, since there will also be round-off errors caused by computer floating point representations of the matrix and the data. Techniques to frame the X-ray inversion problem in such a way as to reduce the effect of the ill-conditioning  of $\mathbf{G}$ will be discussed in the this section.
+where $\mathbf{G}$ is a matrix representing the discretization of the kernel function mapping precipitating electron spectra $\mathbf{m}$ to resulting measurements of the X-ray spectra $\mathbf{d}$. Techniques for computing an approximation of $\mathbf{G}$ were discussed in the previous chapter. There is a result that allows the calculation of the condition number of $\mathbf{G}$ as the ratio of its maximal and minimal singular values. As a general rule, if a given linear problem has condition number $\kappa$, then we can expect to lose $10^\kappa$ digits of precision in calculating the solution. This is a best-case estimate, since there will also be round-off errors caused by computer floating point representations of the matrix and the data. Techniques to frame the X-ray inversion problem in such a way as to reduce the effect of the ill-conditioning  of $\mathbf{G}$ will be discussed in the this section.
 
-A representation of matrix $\mathbf{G}$ was developed in Chapter~3 using monte-carlo simulations. In that analysis, a Green's function approach is used to write the X-ray spectra resulting from arbitrary input electron spectra as a linear combination of the effects of mono-energetic electron beams. The dimensions of matrix $G$ are determined by the binning scheme used to represent electron and X-ray energy spectra. For the forward problem, the particular binning scheme chosen for both spaces is not critical, provided it is fine enough to capture the scale of the details of interest in both spectra, but coarse enough to support obtaining adequately pure statistics for the resulting X-ray spectra in a practical amount of computing time. For the inverse X-ray problem, however, the binning scheme chosen for kernel function $\mathbf{G}$ has a critical effect on the conditioning of the inverse problem.
-
-To show the effect of choosing different binning schemes for the rows and columns of $\mathbf{G}$, we plot the condition number as a function of bin widths in KeV for the input electron spectra and output X-ray spectra in Figure~\ref{condition_number_binning}. 
+A representation of matrix $\mathbf{G}$ was developed in Chapter~3 using monte-carlo simulations. In that analysis, a Green's function approach is used to write the X-ray spectra resulting from arbitrary input electron spectra as a linear combination of the effects of mono-energetic electron beams. The dimensions of matrix $G$ are determined by the binning scheme used to represent electron and X-ray energy spectra. For the forward problem, the particular binning scheme chosen for both spaces is not critical, provided it is fine enough to capture the scale of the details of interest in both spectra, but coarse enough to support obtaining adequately pure statistics for the resulting X-ray spectra in a practical amount of computing time. For the inverse X-ray problem, however, the binning scheme chosen for $\mathbf{G}$ has a critical effect on the conditioning of the inverse problem, and can determine whether solutions are possible to obtain entirely. To show the effect of choosing different binning schemes for the rows and columns of $\mathbf{G}$, we plot the condition number as a function of bin widths in KeV for the input electron spectra and output X-ray spectra in Figure~\ref{condition_number_binning}. 
 
 \begin{figure}[p]
 \label{condition_number_binning}
 \centering
-\includegraphics[width=1.0\textwidth]{figures/chapter_4/condition_number_binning/fig.pdf}
+\includegraphics[width=1.0\textwidth]{figures/chapter_4/condition_number_binning/condition_number_binning.pdf}
 \caption{Condition number of mapping $\mathbf{G}$ as a function of X-ray spectrum and electron spectrum bin-widths in KeV. The white region is the domain where the condition number is infinite, and $\mathbf{G}$ is singular.}
 \end{figure}
 
-Figure~\ref{condition_number_binning} shows that there is a significant set of bin widths which make $\mathbf{G}$ singular. There are also some general trends apparent. Smaller bin widths for the X-ray spectrum tend to reduce the condition number of the problem, as do larger bin widths for the electron spectra. The results from attempting to solve the inverse problem by directly inverting $\mathbf{G}$ are shown for simulated X-ray and electron spectra across different binning schemes in Figure~\ref{direct_inversion_example}.
+Figure~\ref{condition_number_binning} shows that there is a set of bin widths for the electron and X-ray spectra which make $\mathbf{G}$ singular, which implies that it has no inverse. There are also some general trends apparent. Smaller bin widths for the X-ray spectrum tend to reduce the condition number of the problem, as do larger bin widths for the electron spectra. This can be viewed as the effect of supplying the problem with more information (more X-ray data points), and requiring less information from the output, corresponding to larger electron bin widths. The singular region of Figure~\ref{condition_number_binning} corresponds to binning schemes where too much information is being sought from a limited input data set for there to be a unique solution.
 
-\begin{figure}[h]
+The matrix $\mathbf{G}$ is not necessarily square. The inverse used in the non-square case is the Moore-Penrose pseudo inverse, which corresponds to solving the linear system in the least-squares sense. Results from attempting to solve the inverse problem by directly inverting $\mathbf{G}$ are shown for simulated X-ray and electron spectra across different binning schemes in Figure~\ref{direct_inversion_example}.
+
+\begin{figure}[p]
 \label{direct_inversion_example}
 \centering
-\includegraphics[width=1.0\textwidth]{figures/chapter_4/direct_inversion_example/fig.pdf}
-\caption{Direct matrix inversion applied to simulated exponential electron spectra with bin widths of 10 (A), 50 (B), and 100 (C) KeV. The incident particle flux is $1\times10^8$ electrons / second / KeV. }
+\includegraphics[width=\textwidth]{figures/chapter_4/direct_inversion_example/direct_inversion_example7.pdf}
+\caption{Direct matrix inversion applied to simulated exponential electron spectra using bin widths of 10 (A), 50 (B), and 100 (C) KeV. The total incident electron count is $1\times10^8$.}
 \end{figure}
 
-The direct inversion attempts in Figure~\ref{direct_inversion_example} are an example of a fundamental trade-off encountered when solving inverse problems. Because the information contained in the available measurements is subset to the information contained in the physical event being studied, the best solution, in terms of minimizing residuals between predictions of the resulting model and the data, often has a high variance and contains little useful information. This corresponds to case (A) in Figure~\ref{direct_inversion_example}, where the electron spectrum bin widths are small enough that the model obtained is mostly random noise. On the other hand, choosing wide bin widths as in case (C) can leave relevant information contained in the measurements out of the model, so that while the variance in the solution is low, the model is still not descriptive of the event being studied. This trade-off can be handled through optimization techniques.
+The direct inversion attempts in Figure~\ref{direct_inversion_example} are an example of a fundamental trade-off encountered when solving inverse problems. Because the information contained in the available measurements is subset to the information contained in the physical event being studied, the best solution, in terms of minimizing residuals between predictions of the resulting model and the data, often has a high variance and contains little useful information. This corresponds to case (C) in Figure~\ref{direct_inversion_example}, where the electron spectrum bin widths are small enough that the model obtained is mostly random noise. On the other hand, choosing wide bin widths as in case (A) can leave relevant information contained in the measurements out of the model, so that while the variance in the solution is low, the model is still not descriptive of the event being studied. This trade-off can be handled through optimization techniques, and the application of these will be the main focus of this chapter.
 
 \section{Creating Synthetic Data}
 
-The evaluation of techniques to solve inverse problems often depends on the use of synthetically generated, or simulated, data which correspond to solutions which are already known. For the X-ray inversion problem, synthetic data are readily generated using the monte-carlo techniques discussed in Chapter~3. Since the forward problem is linear, X-ray spectra can be generated which correspond to arbitrary electron spectra using a Greens function approach at little computational expense. This represents a power which can be exploited in the analysis of the problem at hand.  
+The evaluation of techniques to solve inverse problems often depends on the use of synthetically generated, or simulated, data which correspond to solutions which are already known. For the X-ray inversion problem, synthetic data are generated using the monte-carlo techniques discussed in Chapter~3. Since the forward problem is linear, X-ray spectra can be generated which correspond to arbitrary electron spectra using a Greens function approach at little computational expense. 
 
-Realistic synthetic data sets always have an error term added, which must be consistent with the statistics of the experiment being simulated. Measuring X-ray spectra is a counting experiment, and therefore the random error associated with the recorded count for a given energy bin has a Poisson distribution. This distribution can be treated as approximately normal for total counts greater than around 10 in each energy bin. This property can be used to simulate an X-ray spectrum which corresponds to an assumed count rate, by adding appropriate noise to the signal produced using the techniques of Chapter~3.
+Realistic synthetic data sets always have an error term added, which must be consistent with the statistics of the experiment being simulated. Measuring X-ray spectra is a counting experiment, and therefore the random error associated with the recorded count for a given energy bin has a Poisson distribution. This distribution can be treated as approximately normal for total counts greater than around 10 in each energy bin due to the central limit theorem. This property can be used to simulate an X-ray spectrum which corresponds to an assumed count rate, by adding appropriate noise to the signal produced using the techniques of Chapter~3.
 
 In a real experiment, a measured X-ray spectrum must be background subtracted. The background subtraction is difficult to simulate and is a source of systematic error. Natural sources such as the 511 KeV annihilation line couple with noise inherent to the detector to make a background energy spectrum with a characteristic shape. We will use a sample drawn from experimental data sets to generate a characteristic background spectrum, and then add an appropriately scaled version to synthetic data generated for a given electron distribution and count rate. This approach neglects any systematic error caused by, for example, detector calibration drifting due to temperature changes. 
 
-Due to the sensitivity of the X-ray inversion problem to small perturbations in the measured spectrum, care must be taken when applying tests using synthetic data so as not to introduce a sampling bias in the measured performance of different inversion techniques. It is possible, for example, to combine a particular background subtraction with a simulated spectrum and corresponding measurement noise to obtain a solution to the inverse problem which very nearly matches the assumed causative electron spectrum. This may not be the case when the same test is subsequently run with a different sample of the background spectrum, or a different random seed for the simulated detector noise. For this reason, single tests of an inversion method on one synthetically generated spectrum have no significance. Evaluating a solution technique to the inverse problem on synthetic data is itself an experiment, and must be treated using a sample size large enough to provide significance in the results. 
+Due to the sensitivity of the X-ray inversion problem to small perturbations in the measured spectrum, care must be taken when applying tests using synthetic data so as not to introduce a sampling bias in the measured performance of different inversion techniques. It is possible to combine a particular background subtraction with a simulated spectrum and corresponding measurement noise to obtain a solution to the inverse problem which very nearly matches the assumed causative electron spectrum through random chance. This may not occur when the same test is subsequently run with a different sample of the background spectrum, or a different random seed for the simulated detector noise. For this reason, single tests of an inversion method on one synthetically generated spectrum have no significance. Evaluating a solution technique to the inverse problem on synthetic data is itself an experiment, and must be treated using a large enough sample size.  
 
-The data available for this project was obtained using multiple detectors which all had an identical design (discussed in Chapter~3). Since the data set is large, many background samples can be generated for use when creating synthetic data. An example of a ``quiet time'' X-ray spectrum is shown in Figure~\ref{quiet_time_xray}. Over 20 of these background spectra are collected across the available data set, and used to create the average background spectrum shown in Figure~\ref{quiet_time_xray_average}.
+The data available for this project was obtained using multiple detectors which all had an identical design (discussed in Chapters 2 and 3). Since the data set is large, many background samples can be generated for use when creating synthetic data. An example of a ``quiet time'' X-ray spectrum is shown in Figure~\ref{quiet_time_xray}. Over 20 of these background spectra are collected across the available data set, and used to create the average background spectrum shown in Figure~\ref{quiet_time_xray_average}.
 
 Simulated X-ray spectra which are generated using the techniques of Chapter~3 are created without a background component. To account for this in the generation of synthetic data, the average of the available measured background spectra is added to the simulated spectrum, and then a randomly chosen background spectrum is subtracted. We will assume that the differences across all of the measured background spectra can be used as a proxy for the systematic error
 expected when a particular background subtraction is applied. 
-
-The complete procedure to conduct a test on an inversion method using synthetic spectra is therefore: 
-
-\begin{enumerate}
-    \item An expected X-ray spectrum resulting from an assumed electron distribution is generated using the simulations of Chapter~3. 
-    \item Normally distributed noise is added with a standard deviation corresponding to the assumed total X-ray count rate.
-    \item The average background spectrum from the available experimental data is added.
-    \item A particular background spectrum from the set of experimental data is subtracted.
-    \item This process is repeated across the different measured background spectra and across different random seeds for the generated noise, to create a set of synthetic X-ray spectra.
-    \item The inversion method being examined is applied across the set of synthetic X-ray spectra, and the resulting inversions are compared statistically with the assumed electron distribution. 
-\end{enumerate}
-
-This procedure generates results for one test on a particular inversion method for a particular assumed spectrum. To evaluate the performance of a given inversion method, this entire procedure needs to be repeated across many different assumed causative electron distributions. While the generation of a particular synthetic data set is computationally cheap, the evaluation of the inverse problem can be expensive depending on the technique used. It is, however, absolutely essential that the evaluation of different inversion methods be carried out across a wide data set to avoid sampling bias. This is even more critical when the inversion method being studied is adaptive, depending on the noise level of the input data set. For this case, the entire procedure must be repeated again across different synthetic spectra corresponding to the range of possible count rates.  
 
 There needs to be an objective measure for the relative performance of a given inversion method. The metric should be a scalar, and should increase with the amount of detail that the inversion method captures about the assumed electron spectrum when it is applied to synthetic data. The normalized mean squared error (NMSE) is a simple metric which satisfies these properties. The NMSE is the squared total difference between the retrieved electron spectrum and the assumed electron spectrum, but normalized to the total signal magnitude to account for the fact that it is applied across different count rates. The definition follows.
 
@@ -113,13 +100,13 @@ The normalized mean squared error between assumed spectrum $\mathbf{y'}$ and exp
 $$\mbox{NMSE}(\mathbf{y},\mathbf{y'}) = \frac{\vert \vert (\mathbf{y} - \mathbf{y'}) \vert \vert}{\vert \vert \mathbf{y} \vert \vert}$$.
 \end{definition}
 
-The NMSE is zero for a perfect agreement between a simulated and retrieved electron spectrum, and increases as the agreement becomes worse. Tests on different inversion techniques will produce distributions of the NMSE. These distributions, and particularly their mean and variance, will be the objective measures used for comparing inversion techniques. 
+The NMSE is zero for a perfect agreement between a simulated and retrieved electron spectrum, and increases as the agreement becomes worse. Tests on different inversion techniques will produce different distributions of the NMSE.
 
 \section{The Least-Squares Regression and the Bias-Variance Trade-off}
 
-Due to the ill-posed nature of the X-ray inversion problem, solutions often take the form of \textit{estimators}. These estimators may be either unbiased, as in the case of least-squares regression, or contain a bias term towards solutions with chosen properties. In Figure~\ref{why_ill_conditioned}, it is apparent that directly solving the X-ray inversion problem using least-squares regression can be ineffective. This is because the problem has a high condition number (Figure~\ref{condition_number_binning}). There is a trade-off apparent for this problem: the condition number can be reduced by selecting coarse binning in model space, which reduces the variance in the solution, but also reduces the amount of information about the data the solution represents. The optimization of this trade-off for a given data set is a basic and well-understood problem in data analysis. A solution is said to be \textit{over-fit} when it aligns well with one data set, but fails to usefully describe the data under small perturbations or additional measurements. On the other hand, a solution is \textit{under-fit} when it fails to reflect significant changes in measurement data. 
+Due to the ill-posed nature of the X-ray inversion problem, solutions often take the form of estimators. These estimators may be either unbiased, as in the case of least-squares regression, or contain a bias term towards solutions with certain properties. In Figure~\ref{why_ill_conditioned}, it is apparent that directly solving the X-ray inversion problem using least-squares regression can be ineffective. This is because the problem has a high condition number (Figure~\ref{condition_number_binning}). There is a trade-off apparent: the condition number can be reduced by selecting coarse binning in model space, which reduces the variance in the solution, but also reduces the amount of information about the data the solution represents. The optimization of this trade-off for a given data set is a basic and well-understood problem in data analysis. A solution is said to be over-fit when it aligns well with one data set, but fails to usefully describe the data under small perturbations or additional measurements. On the other hand, a solution is under-fit when it fails to reflect significant changes in measurement data. 
 
-Determining the balance between over-fitting and under-fitting a given data set is a basic and well-understood problem in data analysis. Roughly speaking, the variance in the data set is used as a proxy for how much variance is expected in well-fit models which describe the data. The $\chi^2$ statistic is a standard descriptor for this relative variance.
+Determining the balance between over-fitting and under-fitting a given data set is a basic problem in data analysis. Roughly speaking, the variance in the data set is used as a proxy for how much variance is expected in well-fit models which describe the data. The $\chi^2$ statistic is a standard descriptor for this relative variance.
 
 \begin{definition}[$\chi^2$ Statistic]
 The $\chi^2$ statistic is the quantity 
@@ -141,28 +128,28 @@ If the reduced $\chi^2$ statistic is much greater than 1, then it indicates a po
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/chapter_4/overunderfit_example/fig.pdf}
+    \includegraphics[width=1.0\textwidth]{figures/chapter_4/overunderfit_example/overfit_underfit.pdf}
     \caption{Example of over-fit and under-fit models to data. A random data set is generated and polynomial models are fit using least-squares regression. The reduced $\chi^2$ statistic is shown for each model.}
     \label{overunderfit_example}
 \end{figure}
 
-Managing the balance over-fitting and under-fitting models is related to the condition number of the problem at hand. If a problem is badly conditioned, as with the X-ray inversion problem, then it may be necessary to under-fit the data to get any useful information from the solution. An example which frequently occurs in test inversions on test data is the existence of negative particle fluxes in predicted electron spectra, an example of which can be seen in Figure~\ref{why_ill_conditioned}. There is no clear way to interpret models with these features. Eliminating them from predicted models is possible using constrained optimization techniques, and will be discussed in the next section. Constrained optimization, combined with other modifications to the least-squares estimator to improve conditioning of the X-ray inversion problem, will be the topic of the remainder of this chapter. 
+Managing the balance over-fitting and under-fitting models is related to the condition number of the problem. If a problem is badly conditioned, then it may be necessary to somewhat under-fit the data to generate a solution with a sufficiently small variance. Another problem which frequently occurs for the X-ray inversion problem is the existence of negative particle fluxes in predicted electron spectra, an example of which can be seen in Figure~\ref{why_ill_conditioned}. There is no clear way to interpret models with these features. Eliminating them from predicted models is possible using constrained optimization techniques, and will be discussed in the next section. Constrained optimization, combined with other modifications to the least-squares estimator to improve conditioning of the X-ray inversion problem, will be the topic of the remainder of this chapter. 
 
 \section{Biased Estimators and Improving the Condition Number}
 
-The condition number for a given linear problem can be expressed as the ratio of the maximum and minimum singular values in the kernel matrix. Using the singular value decomposition, it is possible to write an alternative version of the X-ray inversion problem with smaller singular values suppressed or removed. The singular value decomposition writes the kernel matrix $\mathbf{G}$ as:
+The condition number for a given linear problem can be expressed as the ratio of the maximum and minimum singular values in the kernel matrix. Using the singular value decomposition, it is possible to write an alternative version of the problem with smaller singular values suppressed or removed. The aim is to exchange the original problem for a similar one which is better conditioned. The singular value decomposition writes the kernel matrix $\mathbf{G}$ as:
 
 $$\mathbf{G} = \mathbf{U}\Sigma\mathbf{V^T}$$
 
-where $\mathbf{U}$ and $\mathbf{V}$ are unitary, and $\Sigma$ is a diagonal matrix with the singular values on the diagonal. Since the decomposition can be chosen such that the singular values are in descending order, an approximation and reduction in dimensions to the original kernel matrix can be generated by truncating the expansion. Processes like this produce biased estimators, or imperfect representations of data represented by the kernel matrix, in exchange for more solution stability. In this section we will examine the effects of these approximations on the X-ray inversion problem using synthetically generated data from the techniques of Chapter 3. 
+where $\mathbf{U}$ and $\mathbf{V}$ are unitary, and $\Sigma$ is a diagonal matrix with the singular values on the diagonal. Since the decomposition can be chosen such that the singular values are in descending order, an approximation and reduction in dimensions to the original kernel matrix can be generated by truncating the expansion. Processes like this produce biased estimators, or imperfect representations of the kernel matrix, in exchange for more stable solutions. In this section we will examine the effects of these approximations on the X-ray inversion problem using synthetically generated data from the techniques in Chapter 3. 
 
-Figure~\ref{condition_number_binning} shows that the best binning scheme for the X-ray inversion problem kernel matrix minimizes the bin sizes for the data (X-ray spectra), and maximizes the bin size for the models (electron spectra). This choice must be made within the limits of the statistics of the data set at hand, and the amount of detail desired in the model electron spectrum. As discussed in the previous section, the $\chi^2$ statistic is used to avoid over or under-fitting the problem. Unfortunately, this result is valid only for unbiased estimators, such as the least-squares regression. For a biased estimator, determining the right solution size becomes a much more complicated problem that will be addressed in the next section.
+Figure~\ref{condition_number_binning} shows that the binning scheme for the X-ray inversion problem with the smallest condition number minimizes the bin sizes for the data (X-ray spectra), and maximizes the bin size for the models (electron spectra). This choice must be made within the limits of the statistics of the data set at hand, and the amount of detail desired in the model electron spectrum. As discussed in the previous section, the $\chi^2$ statistic is used to avoid over or under-fitting the problem. Unfortunately, this test is valid only for unbiased estimators, such as the least-squares regression. For a biased estimator, determining the right solution size becomes a much more complicated problem that will be addressed in the next section.
 
 Figure~\ref{singular-value-plots} shows the distribution of singular values across different electron spectrum bin widths. The X-ray spectrum bin widths are left at 1 KeV. Most of the information contained in the kernel matrix is captured in the first few terms of the singular value decomposition. This suggests that reducing the dimensions of the problem by truncating the singular value decomposition might improve its condition.
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/chapter_4/singular_value_plots/fig.pdf}
+    \includegraphics[\textwidth]{figures/chapter_4/singular_value_plots/fig_6.pdf}
     \caption{Plots of the singular values of the kernel matrix for the X-ray inversion problem for different electron spectrum bin widths, with singular values arranged from biggest to smallest.}
     \label{singular-value-plots}
 \end{figure}
@@ -171,7 +158,7 @@ To justify the use of a biased estimator in solving the X-ray inversion problem,
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=.95\textwidth]{figures/chapter_4/condition_number_binning_tsvd/fig.pdf}
+    \includegraphics[width=.95\textwidth]{figures/chapter_4/condition_number_binning_tsvd/condition_number_binning_tsvd.pdf}
     \caption{Plots of the condition number of the kernel matrix for the X-ray inversion problem as a function of electron spectrum and X-ray spectrum bin width, for 1 (A) through 6 (F) truncated singular values.}
     \label{condition-number-binning-tsvd}
 \end{figure}
@@ -188,7 +175,7 @@ The use of the truncated singular value decomposition as a biased estimator intr
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=.95\textwidth]{figures/chapter_4/tsvd_test/fig.pdf}
+    \includegraphics[width=.95\textwidth]{figures/chapter_4/tsvd_test/tsvd_test_2.pdf}
     \caption{Plots of simulated electron spectra for a total electron flux of $1\times10^9 \mbox{electrons} / \mbox{cm}^2 / \mbox{second}$, and their reconstruction from the associated simulated X-ray spectra using a truncated singular value approximation of the kernel matrix. Electron bin widths are set to 50 KeV, and X-ray bin widths to 1 KeV. (A), (B), and (C) show reconstructions with the smallest 1, 5, and 10 singular values dropped from the expansion.}
     \label{tsvd_test}
 \end{figure}
