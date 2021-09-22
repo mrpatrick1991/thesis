@@ -1,0 +1,75 @@
+\chapter{Computer Modelling and the Forward Problem}
+
+\section{Problem Statement}
+
+The goal is to obtain measurements of energetic electron precipitation spectra and fluxes. Direct measurements of the electrons are not usually practical, except for instrumented sounding rockets, since the  precipitating electrons deposit their energy in a region of the atmosphere (approximately 80 to 100 kilometers) that is difficult to reach for durations longer than a few minutes~\citep{Berger1972}. The X-ray photons emitted by the precipitating electrons as they decelerate can penetrate more deeply, however, and are detectable at altitudes above approximately 30 kilometers from the ground. This region of the atmosphere is accessible by stratospheric balloons, capable of flights which can extend for days or weeks, which makes them an attractive platform for longer term measurements. In this chapter, a model is created which predicts the photon measurements a high altitude balloon would observe for a given electron precipitation event. 
+
+This is not a new problem, measurements of X-ray spectra from high altitude balloons have an extensive heritage. The purpose of this chapter is to review the models which already exist and then to develop a similar model, tailored to the instrumentation discussed in Chapter 2. There will be an emphasis on computation speed, so that the model can be evaluated over large parameter spaces quickly on ordinary hardware. This will be particularly important when the inverse problem - attempting to reconstruct electron spectra from X-ray measurements - is attempted in Chapter 3. Additionally, the model we create will be designed to separate dependent variables as much as possible, so that it can be applied to different experiments and different instruments with few modifications. 
+
+\section{Scattering and Energy Deposition Physics}
+
+For the problem at hand, classical physics (with relativistic effects accounted for) offers a sufficient description of the energy deposition and radiation caused by electrons as they travel through the atmosphere. Electrons from space enter the upper atmosphere at relativistic energies, ranging from less than 100 keV to several MeV. As the electrons penetrate the atmosphere, they interact with the neutral constituents of the atmosphere. These interactions are elastic and inelastic scattering via the electromagnetic force. 
+
+Elastic (Rutherford) scattering was discovered through an experiment consisting of a  beam of alpha particles incident on a sheet of thin gold foil. This lead to the discovery of the atomic nucleus by observing that few alpha particles were deflected, and when this happened, they were mostly deflected through large angles, implying that most of the atomic mass was concentrated in a small region in the centre of each atom. In this interaction, neither the nucleus or the scattered alpha particle is excited or changes state, implying that both kinetic energy and momentum are conserved. For electrons scattering from nuclei at keV to MeV energies, relativistic effects need to be taken into account. The name Mott scattering is used in this case. 
+
+When inelastic scattering occurs between an electron and an atomic nucleus, kinetic energy which is lost by the electron is emitted as a photon. The term used is Bremsstrahlung, a german word for the term ``braking radiation''. The Larmor formula, and its relativistic generalization are the well-known descriptors of the radiation emitted by this process. The power radiated by an accelerating charged particle is given classically as:
+
+$$P = \frac{2}{3}\frac{q^2}{m^2c^3}\lvert \mathbf{\dot{p}} \rvert^2$$
+
+where q is the particle charge, m is its mass, and $\mathbf{\dot{p}}$ is the time derivative of its momentum. The relativistic generalization of this formula is:
+
+$$P = \frac{2 q^2 \gamma^6}{3c} \left( \dot{\mathbf{\beta}}^2.- (\mathbf{\beta}\times\mathbf{\dot{\mathbf{\beta}}}^2)\right).$$
+
+There are also expressions for the angular distribution of the radiated power. 
+
+Interaction probabilities for electron scattering are a function of energy, and are characterized by a quantity called the cross section. The definition is constructed by considering a particle incident on a target, which is scattered through an angle $\theta$. Define the impact parameter $b$ as the distance of closest approach to the target. Define the area element $d\sigma = b d\phi db$, in the plane of the impact parameter. The differential cross section is the ratio $\frac{d\sigma}{d\Omega}$, where $d\Omega$ is the differential solid angle through which the incident particle is scattered. 
+
+\begin{figure}[p]
+\label{brem_schematic}
+\centering
+\includegraphics[width=1.0\textwidth]{figures/chapter_3/brem_schematic/brem-schematic-02.png}
+\caption{Illustration of Bremsstrahlung process. An electron is scattered by the electric field of a positive nucleus and emits a photon, conserving momentum. }
+\end{figure}
+
+Cross sections can be experimentally measured, and also derived from theory. For Bremsstrahlung photons emitted by inelastic scattering from atomic nuclei, the electron cloud of the atom complicates the resulting expressions. Usually the process is complex enough that specific assumptions need to be made for derivations which apply in different energy ranges. For the problem of Bremsstrahlung emission by energetic electrons in the atmosphere, there is a synthesis of theoretical and experimental measurements which can be used to obtain electron energy loss as a function of depth in the atmosphere~ \citep{Berger1972}. Once a Bremsstrahlung photon is produced, it then propagates through the atmosphere and undergoes its own interactions. Photoelectric absorption, multiple scattering, and Compton scattering all have to be taken into account to predict the paths that photons will take in the atmosphere\citep{Berger1972}. This complicates the analysis of the causative electron spectrum significantly. 
+
+Approximations and useful descriptions of the entire process: electron precipitation, the resulting production of X-ray photons, and their subsequent transport through the atmosphere have existed for a long time. An early comprehensive review was carried out by~\citet{Brown1966a}. The first approximations of this processes ignored multiple scattering (\citet{Anderson1960}, \citet{Brown1965}, \citet{Christensen1970}, \citet{Barcus1966}, \citet{KAMIYAMA1966}, \citet{Polk1965}). The first attempt with the effects of multiple scattering included was done by~\citet{Rees1963}. The method used was based on empirical measurements of the energy dissipation of electrons in air.
+
+There are some findings from ~\cite{Rees1963} which can be used to make our analysis of the problem more simple. They note that the effect of the Earth's magnetic field, which can roughly be thought of guiding incident electrons, shouldn't have a significant effect on the energy deposition altitude profiles. This is because above around 70 kilometers, the electron collision frequency greatly exceeds the gyro frequency. Additionally, they argue that since magnetic field lines in the Auroral zone are nearly vertical, changes in electron energy should occur only in the perpendicular direction to the extent that the magnetic field intensity changes in the vertical direction. This should be a small effect, since the strength of Earth's magnetic field does not change appreciably on the relevant vertical scales of kilometers to tens of kilometers. This is a big simplification, because the monte-carlo simulations we will employ are highly sensitive to the simulation spatial scale. Ignoring the effects of the magnetic field allows effects which occur on the scale of the electron gyrofrequency to be ignored, making the simulations much faster. As noted by ~\cite{Berger1972}, the number of photons which survive to detection is small compared to the number of incident electrons. This implies that monte-carlo simulations of the resulting photon spectra will be expensive, so to obtain statistically pure results, simulation speed is important. 
+
+Another important result from ~\cite{Rees1963} is that the initial angular distribution of the precipitating electrons has only a minor effect on the energy deposition profiles, once the total path length through the atmosphere is accounted for. This has two implications: on one hand, the problem of finding X-ray photon spectra corresponding to precipitating electron spectra becomes a single dimensional problem in energy, rather than a two dimensional one in angle and energy. This represents a large simplification. On the other hand, this also implies that obtaining information about the angular distribution of the precipitating electrons from X-ray measurmements is a difficult problem. Our approach in this chapter will be to verify this fact through simulation, and then apply the problems insensitivity to electron angular distribution as a useful simplifying assumption. 
+
+~\cite{Berger1972} provide energy deposition curves for electrons in the atmosphere in a convenient form, providing the number of X-ray photons created per incident electron as a function of electron and X-ray energy, for a given altitude in the atmosphere. These curves are sampled from their data and reproduced in Figures~\ref{berger_seltzer_curves_0}, ~\ref{berger_seltzer_curves_0}, and ~\ref{berger_seltzer_curves_0} for altitudes of 32, 34, and 40 kilometers above ground. The strong dependence on the photon population to the sample altitude is apparent, as well as the characteristic shape of the photon spectra. Their results show that one aspect of the problem that cannot be ignored is the dependence on detector altitude. For a given experiment, this will need to be recorded, and the model run at the same altitude. 
+
+It is prudent to again emphasize at this point that modelling the production of X-rays in the atmosphere caused by precipitating electrons is not a new problem. We need to make a model similar to those of ~\cite{Rees1963} and ~\cite{Berger1972}, not because their results are incorrect, but because we need the flexibility of repeated model runs under different scenarios. Further, when the inverse problem of determining causative electron spectra based on X-ray measurements is attempted in the next chapter, the energy resolution needed in the model output will exceed that of the data provided by these authors.
+
+~\cite{Berger1972} present their results in a useful form, which warrants discussion. Resultant X-ray spectra are presented which correspond to mono-energetic beams of electrons. This can be thought of as a Green's function approach to the modelling problem. Evaluating the model for every input electron spectrum of interest is not necessary, provided that the mapping between the input and output is linear. Since the state of the atmosphere is not altered significantly by incident beams of precipitating electrons in the energy range of interest, different electron beams will produce X-ray spectra which combine additively. For the same reason, the intensity of the resulting X-ray beam will scale linearly with the intensity of the beam of precipitating electrons. In the Green's function approach, beams of mono-energetic electrons are modelled, and the resulting X-ray energy spectra are used to form the columns of a matrix. This matrix then maps between electron energy spectra and X-ray energy spectra for a given altitude. Provided the angular distribution of the incoming electrons can be neglected, and the responses to individual mono-energetic beams can be evaluated to sufficient statistical purity, then model runs for arbitrary precipitating electron spectra can be produced with a single matrix multiplication. 
+
+\begin{figure}[p]
+\label{berger_seltzer_curves_0}
+\centering
+\includegraphics[width=1.0\textwidth]{figures/chapter_3/berger-seltzer-curves/berger_seltzer_curves_0}
+\caption{X-ray photon flux per incident electron flux for different incident electron beam energies, from ~\cite{Berger1972}. }
+\end{figure}
+
+\begin{figure}[p]
+\label{berger_seltzer_curves_1}
+\centering
+\includegraphics[width=1.0\textwidth]{figures/chapter_3/berger-seltzer-curves/berger_seltzer_curves_1}
+\caption{X-ray photon flux per incident electron flux for different incident electron beam energies, from ~\cite{Berger1972}. }
+\end{figure}
+\begin{figure}[p]
+\label{berger_seltzer_curves_2}
+\centering
+\includegraphics[width=1.0\textwidth]{figures/chapter_3/berger-seltzer-curves/berger_seltzer_curves_3}
+\caption{X-ray photon flux per incident electron flux for different incident electron beam energies, from ~\cite{Berger1972}. }
+\end{figure}
+
+\section{GEANT4 and Monte-Carlo Simulations}
+
+There are several computer software packages used to simulate the transport of radiation through matter. Two of the most  popular are GEANT4 (GEometry And Tracking), and MCNP (Monte-Carlo N Particle). In this project, we will use the GEANT4 package, since it is open source, and well-documented. The scope of the GEANT4 package is vast, and is used in fields ranging from medical physics to nuclear reactor and detector design. The three main references for the package are~\citet{Agostinelli2003},~\citet{Allison2006}, and~\citet{Allison2016}. GEANT4 is implemented as a set of C++ libraries which provide object-oriented abstractions to nuclear particles and transport processes.  The modularity of this design allows for the creation of simulations with a complexity that can be adjusted to the problem at hand. The simulation we create for predicting X-ray spectra from electron precipitation spectra will use only the necessary components of GEANT4. This is important both for making the resulting program understandable and maintainable, but also for speed. Subjectively, there is no upper limit to the amount of complexity that can be incorporated into this type of software. The aim is to represent only the relevant physics and collect only the data needed for the problem being solved. 
+
+Programs that use the GEANT4 toolkit do so through a defined interface. This results in simpler projects having a similar structure, which is shown schematically in Figure~\ref{GEANT4-structure}. The relevant abstractions are held in distinct C++ objects. 
+
+
+

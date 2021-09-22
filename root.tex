@@ -1,11 +1,14 @@
 \documentclass[12pt]{ucalgthes1}
 \usepackage[letterpaper,top=1in, bottom= 1in, left= 1in, right= 1in]{geometry}
 
+\usepackage{natbib}
 \usepackage{hyperref}
 \usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{amsmath}
-\usepackage{printlen}
+
+\bibliographystyle{abbrvnat}
+\setcitestyle{authoryear,open={(},close={)}} %Citation-related commands
 
 \graphicspath{ {./figures/} }
 \usepackage{mathptmx}
@@ -104,6 +107,7 @@ Paragraph 3
 \clearpage
 
 \pagenumbering{arabic}
+\include{chapter_3}
 \include{chapter_4}
 
 \bibliographystyle{plain}
