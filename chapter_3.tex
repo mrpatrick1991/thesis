@@ -69,7 +69,78 @@ It is prudent to again emphasize at this point that modelling the production of 
 
 There are several computer software packages used to simulate the transport of radiation through matter. Two of the most  popular are GEANT4 (GEometry And Tracking), and MCNP (Monte-Carlo N Particle). In this project, we will use the GEANT4 package, since it is open source, and well-documented. The scope of the GEANT4 package is vast, and is used in fields ranging from medical physics to nuclear reactor and detector design. The three main references for the package are~\citet{Agostinelli2003},~\citet{Allison2006}, and~\citet{Allison2016}. GEANT4 is implemented as a set of C++ libraries which provide object-oriented abstractions to nuclear particles and transport processes.  The modularity of this design allows for the creation of simulations with a complexity that can be adjusted to the problem at hand. The simulation we create for predicting X-ray spectra from electron precipitation spectra will use only the necessary components of GEANT4. This is important both for making the resulting program understandable and maintainable, but also for speed. Subjectively, there is no upper limit to the amount of complexity that can be incorporated into this type of software. The aim is to represent only the relevant physics and collect only the data needed for the problem being solved. 
 
-Programs that use the GEANT4 toolkit do so through a defined interface. This results in simpler projects having a similar structure, which is shown schematically in Figure~\ref{GEANT4-structure}. The relevant abstractions are held in distinct C++ objects. 
+Programs that use the GEANT4 toolkit do so through a defined interface. The structure of a GEANT4 program follows the class diagram shown in Figure~\ref{GEANT4-structure}, which is reproduced from~\citet{Pfeier:519005}. The major components of a GEANT4 simulation are as follows:
+
+\begin{itemize}
+\item Detector geometry and readout: The sensitive component of a GEANT4 simulation is called a detector. This is a representation of the physical object in which particle interactions are measured. An example is the sodium iodide crystal in a scintillation detector. The detector is associated with the necessary infrastructure to read measurements, such as, for example, the energy deposition by an incident particle beam.
+\item Run / Run Action: An instance of a GEANT4 simulation is called a run. Each run usually consists of a set number of incident particles on the detector.
+\item Event: Particle interactions are called events. There are many events for a given run.
+\item Tracking: Particles are associated with tracks. Each track is a straight line, which starts and ends with an event. When an event occurs, the simulation physics determine the probability of each interaction along a track.
+\item Hits and Processes: A hit represents a specific instance of a particle interaction with the physical materials represented in the simulation. Each hit has parameters such as energy deposition, incident angle, and others associated with it. These quantities can be stored in a histogram when they occur. 
+\item Particles and Materials: A particle follows a track in GEANT4 and interacts with the materials represented in the simulation. 
+\end{itemize}
+ 
+This is a simplified view of how a GEANT4 simulation works. In reality, simulations created with the toolkit can be arbitrarily complex. A contemporary example would be the simulations used to design the ALICE detector at the Large Hadron Collider. The context in which the major components of the simulation are used can also change depending on the application. For the simulation of electron precipitation, for example, it is sensible to make the representation of the Earths atmosphere the GEANT4 detector. This choice makes it possible to track and record, among other quantities, energy deposition as a function of penetration depth in the atmosphere. The choices made when designing a GEANT4 simulation for a particular experiment need to be done with the understanding that increasing complexity eventually results in diminishing returns. The main focus of this chapter is to develop a simulation which is sufficiently accurate to represent our experiment using a minimal parameter space. 
+
+\begin{figure}[p]
+\label{GEANT4-structure}
+\hspace{-6cm}
+\includegraphics[width=1.7\textwidth]{figures/chapter_3/GEANT4-structure/GEANT4-structure}
+\caption{GEANT4 architecture, reproduced from~\citet{Pfeier:519005}. Class structure is in the vertical direction, with dependencies towards the bottom.}
+\end{figure}
+
+\section{Representing the Earths Atmosphere}
+
+Precipitating electrons interact with the atoms and molecules which constitute the atmosphere. The simulation needs to account for these constituents. The MSIS-E-90 model~\citep{Picone2002} contains a representation of the main neutral constituents of the atmosphere, as well as their density, and temperature, parameterized by altitude and geographic location. The specific implementation of the model we use in this chapter is written in C++, which makes it compatible with the GEANT4 framework, and is available at \url{https://www.brodo.de/space/nrlmsise/index.html}. This implementation encodes the same data as the original FORTRAN version. Figure~\ref{msis_eval} shows the evaluation of this model as a function of altitude for a specific location on Earth. 
+
+The altitude profiles of Figure~\ref{msis_eval} must be discretized and encoded as a GEANT4 geometry. This is where approximations must be made to keep the model simple enough to be computationally tractable. Each particle interaction in a GEANT4 simulation takes time to calculate and store, but additionally, an ``interaction'' occurs at the end of each particle track. The particle tracks end when a particle reaches a sufficiently low energy, but also when it crosses a physical boundary in the simulation, which exist between the faces of the simulation geometry. It is therefore critical to keep the complexity of the geometry as simple as possible. We choose to define a rectangular, euclidean world, with vertical slices at discrete points representing the atmosphere as a function of altitude. The vertical extent of each slice is chosen to be 1 kilometer, since the major constituents of the atmosphere change density only a small amount on that scale. The horizontal extent of the simulation is set to an arbitrary large number, which for practical purposes can be taken as infinity. This ensures that particle tracks will not terminate by leaving the simulated world through the side boundaries. The model atmosphere is represented to a height of 500 kilometers above ground, beyond which the relevant particle interactions with the atmosphere very rarely occur. 
+
+Each slice of atmosphere in the GEANT4 model is treated as a ``sensitive detector'', which is an abstraction that permits quantities such as energy deposition, entry angle, and the creation of secondary radiation to be recorded as they occur in the simulation. 
+    
+\begin{figure}[p]
+\label{msis_eval}
+\includegraphics[width=1.0\textwidth]{figures/chapter_3/msis_eval/msis_eval}
+\caption{Evaluation of key MSIS model parameters as a function of altitude. Particularly important for the GEANT4 simulation are the density profiles of each atmospheric constituent (top).}
+\end{figure}
+
+A GEANT4 volume is constructed using a stack of three abstractions. First, a G4VSolid is created, representing the shape and dimensions. The G4VSolid can be created from either a small set of geometry primitives (cylinders, boxes, and spheres), or it can be imported from an arbitrary mesh of points. The next component is called a G4LogicalVolume. This abstraction holds a reference to a G4Material, which defines the physical substance that the volume is composed of. The G4Material has the density, temperature, and molecular and atomic components of the volume material specified. The G4LogicalVolume also contains flags which control whether it is a G4SensitiveDetector, or a passive component of the simulation, through which particles are simulated but which does not return data. Finally, a G4PhysicalVolume is created which wraps the rest of the stack into one reference to one object. This object is then placed in the simulation during the initialization routine. 
+
+\section{GEANT4 Physics and Simulation Construction}
+
+Once the physical properties of the GEANT4 are fully specified, a selection of possible interactions between particles is chosen. There are many GEANT4 physics packages available, which are applicable over different energy ranges and for different types of particles. For this project, we will choose the standard electromagnetic physics package~\citep{Burkhardt2004}. This package represents interactions between electrons, photons, and atomic nuclei from energies ranging from MeV down to KeV. Effects that occur primarily below a single KeV, are not represented~\citep{Guatelli2004}. This is a useful approximation for the simulation we construct in this chapter, because it is fast computationally to terminate particle tracks when the reach this energy threshold. Single keV photons and electrons do not travel far in the relevant parts of the atmosphere, and are quickly stopped by the materials surrounding the X-ray instrument. Additionally, the use of a the standard electromagnetic physics package saves development effort and program complexity, since it contains pre-arranged references to all the main interactions we are interested in simulating. 
+
+The input to the atmospheric simulation is specified by electron distributions in incident angle, and energy. Each of these are specified in GEANT4 macro files, which are text files that are used to script GEANT4 applications, and are used to avoid the need to load all the relevant data and inputs at compile time. Topside electron energy and angle distributions can be specified through a list of values, and there are also pre-built functions for the most common forms. For the Green's function approach used for this task, the input energies are a single value which is swept over the relevant energy range (100 KeV to 5 MeV). The question of which angular distribution to use is not obvious, since it depends on the injection process responsible for causing the electron precipitation, the local magnetic field, and possibly other parameters. A Green's function approach here would be complicated, and the resulting simulation would need to span discrete representations of at least two dimensions. It is more practical to fix the angular distribution for a given simulation, and apply a Green's function approach only over the relevant energies. 
+
+It is a general result that only the electron energy spectrum can be retrieved unambiguously from the secondary Bremsstrahlung radiation~\citep{Brown2006}. This indicates that the effect of the angular distribution is small. This is used as the main simplification that we apply in the simulation problem. Choosing a ``reasonable'' angular distribution for the incident electrons and evaluating over only electron energies reduces the simulation a single dimensional problem. This will be critical for the treatment of the inverse problem in the next chapter. 
+
+The inputs to the GEANT4 simulation are then the precipitating electron distribution and total flux. The angular distribution, and the vertical height at which to evaluate the neutral atmosphere model are fixed. The outputs from the GEANT4 simulation are the distributions, in both angle and energy, of the produced X-ray fluxes, along with the total number of X-ray photons in the selected vertical slice of atmosphere. Since the simulation outputs are all integrated quantities, in practice what is done is to select a large arbitrary number for the precipitating electron flux to obtain sufficiently pure statistics in the simulation output, and then to normalize the outputs to this choice. The production of secondary radiation happens less at lower energies, so the chosen incident flux increases towards this limit. Because of this, the most expensive part of the simulation happens when evaluating the effect of low energy (less than 100 KeV) precipitating electrons. Figure~\ref{geant4_io_schematic} shows the inputs and outputs of the GEANT4 simulation schematically. 
+
+\begin{figure}[p]
+\label{geant4_io_schematic}
+\includegraphics[width=1.0\textwidth]{figures/chapter_3/geant4_io_schematic/geant4_io_schematic}
+\caption{Schematic diagram of information flow for a single GEANT4 simulation of energetic electron precipitation and the resulting X-ray radiation}
+\end{figure}
+
+The diagram in Figure~\ref{geant4_io_schematic} is the flow of information for a single GEANT4 simulation run. Since we are applying a Green's function approach, this process needs to be repeated across different monoenergetic electron beams. When this is completed, the responses to arbitrary precipitating electron distributions can then be represented as a linear combination of the recorded monoenergetic responses, without requiring further simulation runs for a fixed sample altitude and electron angular distribution. The workflow for applying the resulting data is shown in Figure~\ref{geant4_how_to_use}.
+
+\begin{figure}[p]
+\label{geant4_how_to_use}
+\includegraphics[width=1.0\textwidth]{figures/chapter_3/geant4_how_to_use/geant4_how_to_use}
+\caption{Schematic diagram of information flow for a single GEANT4 simulation of energetic electron precipitation and the resulting X-ray radiation}
+\end{figure}
+
+The simulation of all the GEANT4 runs required is computationally expensive. Using the University of Calgary ARC computer cluster, each run was scripted to be run across the required electron energy ranges, and across unidirectional, omnidirectional, and cosine angular distributions. The simulation ranges were then evaluated again over altitudes from 30 to 34 kilometers above ground, which correspond to where viable balloon measurements of the X-ray photons can take place. In total, several weeks of computation across over 100 CPU cores were required. Once this was completed, the results were aggregated and stored in plain text files. While the computation was expensive, the results are compact, and are stored in less than one gigabyte of data. Figure~\ref{geant4-monobeam-results} shows the X-ray results graphically across different altitude ranges.
+
+
+
+
+
+
+\section{Validation of Results}
+
+There needs to be a comparison of the simulation results against what already exists in the literature. As stated at the beginning of this chapter, the simulation problem is not new. We are reproducing the work of others so that it may be run over the parameter space we need, especially when attempting to solve the inverse problem. The first published results which we can compare to are by~\citet{Rees1963}. This author presents a semi-empirical form for the results, with a high degree of normalization to the properties of the atmosphere. The work done by~\cite{Berger1972}, on the other hand, is presented in numerical tables in physical units that are close to the output of the GEANT4 simulation. This makes them a good target for comparison to our work. 
+
+
 
 
 
