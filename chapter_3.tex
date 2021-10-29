@@ -131,14 +131,64 @@ The diagram in Figure~\ref{geant4_io_schematic} is the flow of information for a
 
 The simulation of all the GEANT4 runs required is computationally expensive. Using the University of Calgary ARC computer cluster, each run was scripted to be run across the required electron energy ranges, and across unidirectional, omnidirectional, and cosine angular distributions. The simulation ranges were then evaluated again over altitudes from 30 to 34 kilometers above ground, which correspond to where viable balloon measurements of the X-ray photons can take place. In total, several weeks of computation across over 100 CPU cores were required. Once this was completed, the results were aggregated and stored in plain text files. While the computation was expensive, the results are compact, and are stored in less than one gigabyte of data. Figure~\ref{geant4-monobeam-results} shows the X-ray results graphically across different altitude ranges.
 
-
-
-
-
-
 \section{Validation of Results}
 
-There needs to be a comparison of the simulation results against what already exists in the literature. As stated at the beginning of this chapter, the simulation problem is not new. We are reproducing the work of others so that it may be run over the parameter space we need, especially when attempting to solve the inverse problem. The first published results which we can compare to are by~\citet{Rees1963}. This author presents a semi-empirical form for the results, with a high degree of normalization to the properties of the atmosphere. The work done by~\cite{Berger1972}, on the other hand, is presented in numerical tables in physical units that are close to the output of the GEANT4 simulation. This makes them a good target for comparison to our work. 
+There needs to be a comparison of the GEANT4 simulation results against what already exists in the literature. As stated at the beginning of this chapter, the simulation problem is not new. We are reproducing the work of others so that it may be run over the parameter space we need, especially when attempting to solve the inverse problem. The first published results which we can compare to are by~\citet{Rees1963}. This author presents a semi-empirical form for the results, with a high degree of normalization to the properties of the atmosphere. The work done by~\cite{Berger1972}, on the other hand, is presented in numerical tables in physical units that are close to the output of the GEANT4 simulation. This makes them a good target for comparison to our work. 
+
+The NASA BARREL (Balloon Array for Radiation-belt Relativistic Electron Losses) project has made their modelling work on this problem available through the SPEDAS software package~\citep{Angelopoulos2019}. The BARREL project will be discussed in Chapter~4. For now, we will only use their atmospheric simulation as a comparison to our own work. It is distributed in a format comparable to that used by~\cite{Berger1972}, and can be shown in the same parameter space. Figure~\ref{barrel_berger_spedas_comparison_34} show the expected X-ray flux, in normalized units, for isotropic incident electron beams at varying energies. There is an agreement between the output of our model and the published results. 
+
+\begin{figure}[p]
+\label{barrel_berger_spedas_comparison_34}
+\includegraphics[width=\textwidth]{figures/chapter_3/barrel_berger_spedas_comparison/barrel_berger_spedas_comparison_alt_40km_3}
+\caption{Expected X-ray flux as a function of energy at a sample altitude of 34 kilometers using data from GEATN4 simulations, ~\cite{Berger1972}, and the BARREL SPEDAS model.}
+\end{figure}
+
+\section{Problem Separability}
+
+The distributions of photons of a given polar angle and kinetic energy are outputs from the simulation. We will show that the polar angle distribution does not depend on the energy of the precipitating electrons. This allows the results of the simulation to be expressed through their impulse responses in energy only, which is a large simplification. Figure~\ref{photon_angle_independence} shows the polar angle distribution for X-ray photons created by monoenergetic beams of precipitating electrons. Once the total photon counts are normalized to each other, there is no significant difference in the resulting distributions.
+
+We further show that the photon distributions in kinetic energy do not depend on the angular distribution of the precipitating electrons. This important result was originally found by~\citet{Rees1963}, and implies that experiments sensitive to only the energy distribution of bremsstrahlung photons can not recover the angular distribution of the parent electron spectrum. For the attempt at the recovery of the parent energy spectrum in the following chapter, this is useful, since this represents a degenerate dimension of the inverse problem that can be ignored. Figure~\ref{electron_angle_independence} shows GEANT4 simulations of the X-ray energy distributions caused by precipitating beams of electrons following unidirectional (downward), and isotropic angle distributions. 
+
+\begin{figure}[p]
+\label{photon_angle_independence}
+\includegraphics[width=\textwidth]{figures/chapter_3/photon_angle_independence/photon_angle_independence}
+\caption{Polar angle of X-ray photon population at 34 kilometer altitude, as produced by precipitating electrons at different fixed energies. Units are normalized to account for the higher number of photons produced with greater beam energies.}
+\end{figure}
+
+\begin{figure}[p]
+\label{electron_angle_independence}
+\includegraphics[width=\textwidth]{figures/chapter_3/electron_angle_independence/electron_angle_independence}
+\caption{Photon energy distribution for 1 MeV incident electron beams having isotropic and unidirectional angular distributions. }
+\end{figure}
+
+The final simplification for the simulation problem comes from the parameterization of the detector response. So far we have focused on the creation and validation of the atmospheric model, which gives the angle and energy spectra of the X-ray photons which exist at the detector altitude. The detector output when it is exposed to this population will be a function of this population, and must be modelled through further simulation. The general operating principles and design of the scintillation detectors used in this experiment were described in the previous chapter. For the detector simulation, a GEANT4 model of the geometry is constructed (Figure~\ref{detector_geant4_model}.) 
+
+\begin{figure}[p]
+\label{detector_geant4_model}
+\includegraphics[width=\textwidth]{figures/chapter_3/detector_geant4_model/detector_geant4_model}
+\caption{GEANT4 representation of the detector geometry. The lower plexiglass mount is shown in cyan, the aluminum body in grey, and the led collimator in purple. The height of the complete unit is approximately 30 cm.}
+\end{figure}
+
+We examine how the detector geometry selects a population from the X-ray angular distribution. In the detector simulations, an isotropic source of X-ray photons at a fixed energy are created. We run two simulations independently: the first has the entire detector geometry, with its construction materials, enabled. The material corresponding to the sodium iodide crystal, however, is set to a vacuum. This is done to measure the population of photons that reach the crystal, rather than the dynamics of the energy deposition events that happen inside of it. The second simulation is the same, except that the detector materials are set to a vacuum as well as the sodium iodide detector. This provides a baseline which we compare against the first simulation. The distribution of photons which enter the detector geometry will be subset to those recorded when the detector materials are set to a vacuum. Figure~\ref{population_inside_detector} shows the results these two simulations. The lead collimator assembly at the top of the detector has limited the field of view. Some backscatter from the detector materials can also be seen in the first simulation. 
+
+\begin{figure}[p]
+\label{population_inside_detector}
+\includegraphics[width=\textwidth]{figures/chapter_3/population_inside_detector/population_inside_detector}
+\caption{}
+\end{figure}
+
+The atmospheric simulation showed that the angle distribution of the X-ray photons does not significantly depend on either the angular distribution of precipitating electrons or their energy distribution. Figure~\ref{population_inside_detector} indicates that the effect of the lead collimator of the detector is essentially to limit the angle from which photons may enter the sodium iodide crystal. Together, this means that the angular portion of the complete problem from electron precipitation, to the creation of x-rays, and finally, to detection, can be largely treated as trivial. To a good approximation, and at the relevant energies (100 keV to 2 MeV), a constant scalar which accounts for the detector field of view can be used to map recorded counts to physical units.
+
+The behaviour of the sodium iodide crystal itself to the absorption of X-ray photons is important and can also be answered through simulation. For this, the detector geometry is fully enabled in the simulation, including the sodium iodide crystal. Rather than the distributions of photon energies and angles within the crystal volume, energy deposition events will be recoded. The energy deposition events correspond to the flashes of light which are amplified by the photomultiplier tube and recorded by the detector electronics. Figure~\ref{detector_energy_response} shows histograms of the energy deposition events for a set of monochromatic photon beams. The responses can be described by delta functions at the corresponding photon energies, with interactions at lower energies which become more complex as the beam energy increases. The main interaction in this energy range is the single deposition of all the photon energy at once, which is why the peaks are easily detectable. 
+
+\begin{figure}[p]
+\label{detector_energy_response}
+\includegraphics[width=\textwidth]{figures/chapter_3/detector_energy_response/detector_energy_response}
+\caption{Energy deposition events inside the detector crystal for beams of monochromatic photons at different set energies. }
+\end{figure}
+
+
+ 
 
 
 
