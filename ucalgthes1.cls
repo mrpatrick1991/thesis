@@ -84,7 +84,7 @@
 
 %\input setspace.sty %(NM 2005 setspace.sty replacing doublespace.sty)(nm 2007 commented out)
 \input doublespace.sty %(nm 2007 re-instated)
-\input thes1\@ptsize.clo\relax
+\input thes12.clo\relax
 
 
 %    ****************************************
