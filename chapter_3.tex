@@ -147,7 +147,7 @@ The NASA BARREL (Balloon Array for Radiation-belt Relativistic Electron Losses) 
 
 The distributions of photons of a given polar angle and kinetic energy are outputs from the simulation. We will show that the polar angle distribution does not depend on the energy of the precipitating electrons. This allows the results of the simulation to be expressed through their impulse responses in energy only, which is a large simplification. Figure~\ref{photon_angle_independence} shows the polar angle distribution for X-ray photons created by monoenergetic beams of precipitating electrons. Once the total photon counts are normalized to each other, there is no significant difference in the resulting distributions.
 
-We further show that the photon distributions in kinetic energy do not depend on the angular distribution of the precipitating electrons. This important result was originally found by~\citet{Rees1963}, and implies that experiments sensitive to only the energy distribution of bremsstrahlung photons can not recover the angular distribution of the parent electron spectrum. For the attempt at the recovery of the parent energy spectrum in the following chapter, this is useful, since this represents a degenerate dimension of the inverse problem that can be ignored. Figure~\ref{electron_angle_independence} shows GEANT4 simulations of the X-ray energy distributions caused by precipitating beams of electrons following unidirectional (downward), and isotropic angle distributions. 
+We further show that the photon distributions in kinetic energy do not depend on the angular distribution of the precipitating electrons. This result was originally found by~\citet{Rees1963}, and implies that experiments sensitive to only the energy distribution of bremsstrahlung photons can not recover the angular distribution of the parent electron spectrum. For the attempt at the recovery of the parent electron spectrum in the following chapter, this is useful, since this represents a degenerate dimension of the inverse problem that can be ignored. Figure~\ref{electron_angle_independence} shows GEANT4 simulations of the X-ray energy distributions caused by precipitating beams of electrons following unidirectional (downward), and isotropic angle distributions. 
 
 \begin{figure}[p]
 \label{photon_angle_independence}
@@ -158,7 +158,7 @@ We further show that the photon distributions in kinetic energy do not depend on
 \begin{figure}[p]
 \label{electron_angle_independence}
 \includegraphics[width=\textwidth]{figures/chapter_3/electron_angle_independence/electron_angle_independence}
-\caption{Photon energy distribution for 1 MeV incident electron beams having isotropic and unidirectional angular distributions. }
+\caption{Photon energy distribution for 1 MeV incident electron beams having isotropic and unidirectional angular distributions.}
 \end{figure}
 
 The final simplification for the simulation problem comes from the parameterization of the detector response. So far we have focused on the creation and validation of the atmospheric model, which gives the angle and energy spectra of the X-ray photons which exist at the detector altitude. The detector output when it is exposed to this population will be a function of this population, and must be modelled through further simulation. The general operating principles and design of the scintillation detectors used in this experiment were described in the previous chapter. For the detector simulation, a GEANT4 model of the geometry is constructed (Figure~\ref{detector_geant4_model}.) 
