@@ -13,15 +13,15 @@
 \graphicspath{ {./figures/} }
 \usepackage{mathptmx}
 \usepackage{mathtools} 
-\title{Energetic Electron Precipitation Measurements from High Altitude Platforms\\ \bigskip
+\title{Measuring Energetic Electron Precipitation using High Altitude Balloons and X-ray Spectroscopy\\ \bigskip
  }
 
 
 \author{Matthew Patrick}
-\thesisyear{2021}
+\thesisyear{2022}
 \thesis{thesis}
 \newcommand{\thesistitle}{Title of Thesis}
-\monthname{April}
+\monthname{February}
 \dept{SPACE PHYSICS}
 \degree{DOCTOR OF PHILOSOPHY}
 
@@ -76,6 +76,13 @@
 \phantomsection
 \altchapter{\bf{Abstract}}
 
+This work develops experimental methods to infer energetic electron precipitation using X-ray measurements from high altitude balloons. The problem of creating a mapping between the energies and fluxes of secondary X-ray radiation and the causative precipitating electron spectrum is solved using monte-carlo simulations and computer models of the detectors. The inverse problem of determining the electron spectrum from X-ray measurements is solved from first principles by treating the underlying ill-conditioning using regularization and preconditioning methods.  Validation using simulations of the precipitating electrons and detector demonstrates that the inverse problem is solvable for realistic experimental noise levels in the measured X-ray spectra. The problem of overfitting is solved using cross-validation techniques, which produces electron spectra that do not depend on assumptions about the amount of information that can be reliably determined from the experimental measurements.
+
+X-ray spectrometer measurements from two University of Calgary high altitude balloon flights and a NASA BARREL balloon flight are analyzed using the developed methods. The resulting electron spectra are compared with the electron spectra obtained using conventional fitting techniques to show that exponential or mono-energetic models can under-fit the available data. A comparison between the BARREL balloon data and a magnetically connected RBSP measurement of the precipitating electron spectrum prior to scattering shows that the approximate energy range over which the applicable scattering processes in the radiation belts operate can be determined from the balloon data. The average electron flux measured from the balloon is shown to be consistent with the RBSP measurements under a strong scattering assumption. 
+
+The combination of models produced using the developed analysis being consistent with previous experiments and correct based on simulated data is used to advance the case that balloon X-ray spectrometer measurements carry more information than is typically resolved using more simple techniques. 
+
+
 \newpage
 \phantomsection
 \altchapter{\bf{Acknowledgements}}
@@ -120,6 +127,6 @@ Paragraph 3
 \bibliographystyle{plain}
 \bibliography{library}
 
-\appendix
-\include{appendix_1}
+%\appendix
+%\include{appendix_1}
 \end{document}
