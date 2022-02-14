@@ -4,7 +4,7 @@
 
 In this chapter the problem of obtaining information about the causative electron precipitation directly from X-ray measurements will be examined. We will term this the ``X-ray inversion problem.'' This type of analysis belongs to a broad class of what are called inverse problems, which attempt to reconstruct physical events based on limited measurement data.  A classic example of an inverse problem is the determination of media velocities within the Earth based on seismic measurements at discrete points. The ``forward problem'' of predicting instrument responses based on an assumed physical event can be handled by, for example, computer simulations, as was done in the last chapter for the problem of predicting the measured X-ray distributions which result from a given electron precipitation event. Unlike forward problems, inverse problems have mathematical properties which make them difficult or impossible to solve without  significant a-priori assumptions. For the X-ray inversion problem, we will show the reasons for this, and demonstrate some measures which can be taken to mitigate these effects.
 
-We will use the terms used by~\citep{Tarantola2004}. Define the forward problem by the mapping:
+We will use the terms used by~\citet{Tarantola2004}. Define the forward problem by the mapping:
 
 \begin{equation}
 \mathbf{F}:\mathbf{M} \rightarrow \mathbf{D}
@@ -38,13 +38,13 @@ $$\kappa = \lim_{\epsilon \to 0} \sup_{\vert\vert \delta x \vert \vert \leq \eps
 is large for small changes in the kernel function $\delta f$ and input data $\delta x$.
 \end{definition}
 
- The X-ray inversion problem is ill-conditioned. Figure~\ref{why_ill_conditioned} illustrates this by showing three different model precipitating electron spectra, and a simulation of their resulting X-ray spectra in log-linear space. A small change in the measured X-ray spectrum results in a drastically different model electron spectrum. The treatment of this instability will be the main problem addressed in this chapter. 
+ The X-ray inversion problem is ill-conditioned. Figure~\ref{why_ill_conditioned} illustrates this by showing three different model precipitating electron spectra, and a simulation of their resulting X-ray spectra in log-linear space. Each model electron spectrum was assumed, and the detector response was produced using the forward modelling of the previous chapter. Different model electron spectra produce very similar resulting X-ray spectra. The treatment of this instability will be the main problem addressed in this chapter. 
 
 \begin{figure}[p]
 \label{why_ill_conditioned}
 \centering
 \includegraphics[width=\textwidth]{figures/chapter_4/why_ill_conditioned/why_ill_conditioned.pdf}
-\caption{(Top): Example of three different assumed electron energy spectra (mono-energetic, exponentially decreasing, and gaussian) for a precipitating electron flux of $1\times10^9$ electrons per $\mbox{cm}^2$ per second. (Bottom): Resulting simulated X-ray spectra for each electron spectrum, using the methods developed in Chapter 3.} 
+\caption{(Top): Example of three different assumed electron energy spectra (mono-energetic, exponentially decreasing, and Gaussian) for a precipitating electron flux of $1\times10^9$ electrons per $\mbox{cm}^2$ per second. (Bottom): Resulting simulated X-ray spectra for each electron spectrum, using the methods developed in Chapter 3.} 
 \end{figure}
 
 \section{Framing the X-ray Inversion Problem}
@@ -86,8 +86,6 @@ Realistic synthetic data sets always have an error term added, which must be con
 In a real experiment, a measured X-ray spectrum must be background subtracted. The background subtraction is difficult to simulate and is a source of systematic error. Natural sources such as the 511 KeV annihilation line couple with noise inherent to the detector to make a background energy spectrum with a characteristic shape. We will use a sample drawn from experimental data sets to generate a characteristic background spectrum, and then add an appropriately scaled version to synthetic data generated for a given electron distribution and count rate. This approach neglects any systematic error caused by, for example, detector calibration drifting due to temperature changes. 
 
 Due to the sensitivity of the X-ray inversion problem to small perturbations in the measured spectrum, care must be taken when applying tests using synthetic data so as not to introduce a sampling bias in the measured performance of different inversion techniques. It is possible to combine a particular background subtraction with a simulated spectrum and corresponding measurement noise to obtain a solution to the inverse problem which very nearly matches the assumed causative electron spectrum through random chance. This may not occur when the same test is subsequently run with a different sample of the background spectrum, or a different random seed for the simulated detector noise. For this reason, single tests of an inversion method on one synthetically generated spectrum have no significance. Evaluating a solution technique to the inverse problem on synthetic data is itself an experiment, and must be treated using a large enough sample size.  
-
-The data available for this project was obtained using multiple detectors which all had an identical design (discussed in Chapters 2 and 3). Since the data set is large, many background samples can be generated for use when creating synthetic data. An example of a ``quiet time'' X-ray spectrum is shown in Figure~\ref{quiet_time_xray}. Over 20 of these background spectra are collected across the available data set, and used to create the average background spectrum shown in Figure~\ref{quiet_time_xray_average}.
 
 Simulated X-ray spectra which are generated using the techniques of Chapter~3 are created without a background component. To account for this in the generation of synthetic data, the average of the available measured background spectra is added to the simulated spectrum, and then a randomly chosen background spectrum is subtracted. We will assume that the differences across all of the measured background spectra can be used as a proxy for the systematic error
 expected when a particular background subtraction is applied. 
@@ -135,7 +133,7 @@ Managing the balance over-fitting and under-fitting models is related to the con
 
 \section{Biased Estimators and Improving the Condition Number}
 
-The condition number for a given linear problem can be expressed as the ratio of the maximum and minimum singular values in the kernel matrix. Using the singular value decomposition, it is possible to write an alternative version of the problem with smaller singular values suppressed or removed. The aim is to exchange the original problem for a similar one which is better conditioned. The singular value decomposition writes the kernel matrix $\mathbf{G}$ as:
+The condition number for a given linear problem can be expressed as the ratio of the maximum and minimum singular values in the kernel matrix.  Using the singular value decomposition, it is possible to write an alternative version of the problem with smaller singular values suppressed or removed. The aim is to exchange the original problem for a similar one which is better conditioned. The singular value decomposition writes the kernel matrix $\mathbf{G}$ as:
 
 $$\mathbf{G} = \mathbf{U}\Sigma\mathbf{V^T}$$
 
@@ -143,7 +141,7 @@ where $\mathbf{U}$ and $\mathbf{V}$ are unitary, and $\Sigma$ is a diagonal matr
 
 Figure~\ref{condition_number_binning} shows that the binning scheme for the X-ray inversion problem with the smallest condition number minimizes the bin sizes for the data (X-ray spectra), and maximizes the bin size for the models (electron spectra). This choice must be made within the limits of the statistics of the data set at hand, and the amount of detail desired in the model electron spectrum. As discussed in the previous section, the $\chi^2$ statistic is used to avoid over or under-fitting the problem. Unfortunately, this test is valid only for unbiased estimators, such as the least-squares regression. For a biased estimator, determining the right solution size becomes a much more complicated problem that will be addressed in the next section.
 
-Figure~\ref{singular-value-plots} shows the distribution of singular values across different electron spectrum bin widths. The X-ray spectrum bin widths are left at 1 KeV. Most of the information contained in the kernel matrix is captured in the first few terms of the singular value decomposition. This suggests that reducing the dimensions of the problem by truncating the singular value decomposition might improve its condition.
+Figure~\ref{singular-value-plots} shows the distribution of singular values across different electron spectrum bin widths. The X-ray spectrum bin widths are set at 1 KeV. Most of the information contained in the kernel matrix is captured in the first few terms of the singular value decomposition. This suggests that reducing the dimensions of the problem by truncating the singular value decomposition might improve its condition.
 
 \begin{figure}[p]
     \centering
@@ -208,12 +206,13 @@ Tikhonov regularization has a heuristic interpretation. The deviation from a sol
 
 The classic method for choosing $\mathbf{\alpha}$ is the so-called ``L-curve''~\citep{Hanke1996,Hansen1992,Hansen1993}. This heuristic method works by plotting the solution norm $\vert\vert \mathbf{x} \vert\vert$ vs the error term $\vert \vert \mathbf{A}\mathbf{x} - \mathbf{b} \vert \vert$ in log-log space. Typically, but not always, this plot has a characteristic L shape, with an inflection point which locates the value for $\alpha$ that produces the most significant reduction in solution norm for the smallest error term. If the error term is thought of as the cost of solution stability, then the inflection point locates the most economical value of $\alpha$. 
 
-An example of this applied to the X-ray inversion problem is shown in Figure~\ref{l-curve-example}. We use a synthetic X-ray spectrum based on an exponential beam of electrons with a folding energy of 300 KeV. The L-curve is shown and used to select $\alpha = 2.0\times10^{-5}$. The assumed electron spectrum is plotted along with spectra determined using direct matrix inversion, and Tikhonov regularization for the selected value of $\alpha$. Multiple runs across synthetic data generated with different random seeds are used to provide an accurate representation of the variance in each solution. 
+An example of this applied to the X-ray inversion problem is shown in Figure~\ref{l-curve-example}. I use a synthetic X-ray spectrum based on an exponential beam of electrons with a folding energy of 300 KeV. The L-curve is shown and used to select $\alpha = 2.0\times10^{-5}$. The assumed electron spectrum is plotted along with spectra determined using direct matrix inversion, and Tikhonov regularization for the selected value of $\alpha$. Multiple runs across synthetic data generated with different random seeds are used to provide an accurate representation of the variance in each solution. 
 
 \begin{figure}[p]
+\label{l-curve-example}
     \centering
     \includegraphics[width=\textwidth]{figures/chapter_4/l-curve-example/L_curve_example_5.pdf}
-    \caption{Application of Tikhonov regularization and the ``L-curve'' method to synthetic exponential electron spectrum. The assumed electron spectrum is shown in blue (bottom, left), and the retrieved spectra are shown for direct inversion (grey) and Tikhonov regularization (green).  }
+    \caption{Application of Tikhonov regularization and the leave-one-out cross-validation method to synthetic exponential electron spectrum. The X-ray spectrum corresponding to the assumed electron spectrum is shown in the top panel. The middle panel shows the assumed electron spectrum in blue, with retrieved spectra in grey (direct inversion) and green (Tikhonov regularization). The L-curve and selected value for $\alpha$ are shown in the bottom panel. }
     \label{l-curve-example}
 \end{figure}
 
@@ -227,7 +226,7 @@ Unfortunately, there is no general method to assign useful confidence intervals 
 
 The L-curve method is computationally expensive, since solutions need to be generated for every value of $\alpha$ being examined. For relatively small matrices, say, less than 1000 by 1000 rows and columns, this is a small problem, but it becomes significant as the problem being examined scales. Because of this, when using Tikhonov regularization, the most sensible binning scheme for the X-ray inversion problem is not necessarily the one which provides the finest resolution in X-ray spectra, as Figure~\ref{condition_number_binning} would suggest. Practical considerations based on computational limits need to be taken into account. 
 
-The fact that the L-curve method is somewhat heuristic motivates us to look for another way to select a value for $\alpha$. The ``corner'' of the L-curve plot, if it appears, is not always sharp. This represents a way that the expectations of the human doing the analysis can enter into the solutions created when applying Tikhonov regularization. The potential deficiencies of the L-curve method are examined in depth by~\citet{Hanke1996,Hansen1993}, and ~\citet{Vogel1996}. There is an alternative family of related methods which can be used to select $\alpha$ automatically, based on the statistical properties of the data alone. The cross-validation methods~\citep{Golub1979, Aster2005} use the idea that the artificial removal of parts of the input data produce different solutions and can give information about the stability of the problem being analysed. The hypothesis is that the effect of the removal of a single data point, such as a single energy bin in the X-ray inversion problem, should have only a small effect on the retrieved electron spectrum. Iterating over the available energy bins, and suppressing each one from the problem in turn, will produce a spread of solutions, whose variation gives a picture of the overall stability of the solution. If this entire process is then repeated over different values of $\alpha$, then the total mean squared error between the suppressed data points and the regularized solutions can be compared and numerically minimized. This process is motivated with a sample of data in Figure~\ref{cross_validation_motivation}. In both the over-fit and under-fit cases, the missing data point is represented poorly in the solutions. Minimizing this effect represents a balance between these cases and produces a corresponding value for $\alpha$. 
+The fact that the L-curve method is somewhat heuristic motivates us to look for another way to select a value for $\alpha$. The ``corner'' of the L-curve plot, if it appears, is not always sharp. This represents a way that the expectations of the human doing the analysis can enter into the solutions created when applying Tikhonov regularization. The potential deficiencies of the L-curve method are examined in depth by~\citet{Hanke1996,Hansen1993}, and ~\citet{Vogel1996}. There is an alternative family of related methods which can be used to select $\alpha$ automatically, based on the statistical properties of the data alone. Cross-validation methods~\citep{Golub1979} use the idea that the artificial removal of parts of the input data produce different solutions and can give information about the stability of the problem being analysed. The hypothesis is that the effect of the removal of a single data point, such as a single energy bin in the X-ray inversion problem, should have only a small effect on the retrieved electron spectrum when the correct degree of regularization has been applied. Iterating over the available energy bins, and suppressing each one from the problem in turn, will produce a spread of solutions, whose variation gives a picture of the overall stability of the solution. If this entire process is then repeated over different values of $\alpha$, then the total mean squared error between the suppressed data points and the regularized solutions can be compared and numerically minimized. This process is motivated with a sample of data in Figure~\ref{cross_validation_motivation}. In both the over-fit and under-fit cases, the missing data point is represented poorly in the solutions. Minimizing this effect represents a balance between these cases and produces a corresponding value for $\alpha$. 
 
 \begin{figure}[p]
     \centering
@@ -238,7 +237,7 @@ The fact that the L-curve method is somewhat heuristic motivates us to look for 
 
 Iteration over a single suppressed data point is called leave one out cross-validation. It is also possible to leave out any number of data points up to $n-1$, where $n$ is the total number of points in the data set. For leave n out cross validation, one evaluates the solutions generated by every possible way to suppress n data points. This is computationally expensive. 
 
-In Figure~\ref{cross-validation-data}, the synthetic data set from Figure~\ref{l-curve-example} is reproduced, but $\alpha$ is selected using leave-one-out cross validation. Minimizing the mean-squared error using the cross-validation method suggests $\alpha=7.8\times10^-2.$ This is a different value from what was used in Figure~\ref{cross-validation-example}, but the retrieved spectrum is approximately the same. This suggests a degree of stability across values of $\alpha$ for the application of Tikhonov regularization to the X-ray inversion problem, but testing across many data sets is required for verification. This will be done at the end of this chapter, where the different regularization methods are compared across a set of synthetic data sets. 
+In Figure~\ref{cross-validation-data}, the synthetic data set from Figure~\ref{l-curve-example} is reproduced, but $\alpha$ is selected using leave-one-out cross validation. Minimizing the mean-squared error using the cross-validation method suggests $\alpha=7.8\times10^-2.$ This is a different value from what was used in Figure~\ref{l-curve-example}, but the retrieved spectrum is approximately the same. This suggests a degree of stability across values of $\alpha$ for the application of Tikhonov regularization to the X-ray inversion problem, but testing across many data sets is required for verification. This will be done at the end of this chapter, where the different regularization methods are compared across a set of synthetic data sets. 
 
 Unlike the ``L-curve'' method, cross-validation leaves no room for the human analysing the problem to have input on the regularization parameter $\alpha$. Instead of looking for an inflection point on a log-log graph, which has some room for interpretation, the minimization of squared errors across values of $\alpha$ for cross-validation is carried out numerically. Since the minimization process requires no human intervention, it can be  applied to large bodies of synthetic data automatically. This is useful both for running on synthetic data for testing, as well as different sets of experimental data. Since the objective characterization of the performance of an inversion technique to the X-ray inversion problem will depend on its application across to synthetic data, this strength is important. 
 
@@ -251,17 +250,17 @@ Unlike the ``L-curve'' method, cross-validation leaves no room for the human ana
 \newpage
 \section{Higher Order Regularization}
 
-The process of Tikhonov regularization can be interpreted as the addition of a-priori information to the problem~\cite{Tikhonov1995NumericalMF}. In Tikhonov regularization, the modified least-squares problem:
+The process of Tikhonov regularization can be interpreted as the addition of a-priori information to the problem~\citep{Tikhonov1995NumericalMF}. In Tikhonov regularization, the modified least-squares problem:
 
 $$\min_{\mathbf{x}} \vert \vert \mathbf{A} \mathbf{x} - \mathbf{b} \vert \vert + \alpha \vert \vert \mathbf{x} \vert \vert$$
 
-has a penalty term  $\alpha \vert \vert \mathbf{x} \vert \vert$ which introduces a preference for solutions with a smaller norm. This was motivated by the fact that more complex solutions typically have a larger number of non-zero terms than simpler solutions, and so, to introduce stability, the strength of the regularization should increase with solution complexity. This was indicated graphically through the L-curve method. There are other forms for the penalty term, which can be chosen to align with the properties of physically reasonable solutions to the problem at hand~\citep{Aster2005}. This section will examine these higher-order regularization terms as applied to the X-ray inversion problem. 
+has a penalty term  $\alpha \vert \vert \mathbf{x} \vert \vert$ which introduces a preference for solutions with a smaller norm. This was motivated by the fact that more complex solutions typically have a larger number of non-zero terms than simpler solutions, and so, to introduce stability, the strength of the regularization should increase with the solution norm, which is thought of as corresponding to the amount of information in the solution. This was indicated graphically through the L-curve method. There are other forms for the penalty term, which can be chosen to align with the properties of physically reasonable solutions to the problem at hand. This section will examine these higher-order regularization terms as applied to the X-ray inversion problem. 
 
 Write a new least-squares problem as:
 
 $$\min_{\mathbf{x}} \vert \vert \mathbf{A} \mathbf{x} - \mathbf{b} \vert \vert + \alpha \vert \vert \mathbf{L} \mathbf{x} \vert \vert$$
 
-where $\mathbf{L}$ is a linear operator. If $\mathbf{L}$ is the identity matrix, then the ordinary regularization is recovered. This is termed zeroth-order tikhonov regularization. In first-order tikhonov regularization, $\mathbf{L}$ is chosen to be the matrix which approximates the first derivative operator:
+where $\mathbf{L}$ is a linear operator. If $\mathbf{L}$ is the identity matrix, then the ordinary regularization is recovered. This is termed zeroth-order Tikhonov regularization. In first-order Tikhonov regularization, $\mathbf{L}$ is chosen to be the matrix which approximates the first derivative operator:
 
 \[
 \mathbf{L} = \begin{bmatrix} 
@@ -287,7 +286,7 @@ Second-order Tikhonov regularization uses a linear operator which approximates t
     \end{bmatrix}
 \].
 
-This operator introduces a preference for smooth solutions. There is an intuitive reason why using this operator for the X-ray inversion problem might be useful - as the noise in the measured X-ray spectrum increases, the number of features detectable in the model electron spectrum will go down. A relevant example would be an electron spectrum which is well-described by two beams at different energies. For low noise levels in the corresponding measured X-ray spectrum, the two beams can be resolved through direct inversion, without applying regularization. As the noise in the measured spectrum is increased, second-order regularization will dull and blend the two sharp peaks until eventually they are not distinguishable.  This is a desirable property, since the bias tends towards solutions which reflect the lack of information a high noise measurement represents. This is illustrated in Figure~\ref{two_peak_second_order_example}.
+This operator introduces a preference for smooth solutions. There is an intuitive reason why using this operator for the X-ray inversion problem might be useful - as the noise in the measured X-ray spectrum increases, the number of features detectable in the model electron spectrum will go down. A relevant example would be an electron spectrum which is well-described by two beams at different energies. For low noise levels in the corresponding measured X-ray spectrum, the two beams can be resolved through direct inversion, without applying regularization. As the noise in the measured spectrum is increased, second-order regularization will dull and blend the two sharp peaks until eventually they are not distinguishable.  This is a desirable property, since the bias tends towards solutions which reflect the lack of information a high noise measurement represents. This is illustrated in Figure~\ref{two_peak_second_order_example}, where a test electron spectrum consisting of two mono-energetic beams is assumed, and the resulting simulated X-ray spectra are inverted under different assumed noise levels, corresponding to gaussian noise consistent with total counts of electrons. 
 
 \begin{figure}[p]
     \centering
@@ -317,9 +316,9 @@ The condition number of $\mathbf{A}$ is approximately $2.0\times10^{4}$. Instead
 
 \[
 \mathbf{L} = \begin{bmatrix} 
-    100 & 0 & 0  \\
+    1\times10^4 & 0 & 0  \\
     0 & 1  & 0 \\
-    0 & 0 & 0
+    0 & 0 & 1
     \end{bmatrix}
 \].
 
@@ -327,13 +326,13 @@ The new matrix is:
 
 \[
 \mathbf{\tilde{A}} = \begin{bmatrix} 
-    1 & 100.01 & 0  \\
+    1 & 1.001 & 0  \\
     0 & 1  & 0 \\
     0 & 0 & 1
     \end{bmatrix}
 \].
 
-with a condition number of $1.0\times10^{4}$. The corresponding transformation can be applied to $\mathbf{b}$ to obtain the solution, $\mathbf{x}$, of the original problem. This preconditioning can be applied before using regularization methods, reducing the amount of regularization required for stability with a  particular problem and data set. 
+with a condition number of $2.62$. The same transformation can be applied to $\mathbf{b}$, and the transformed problem is then solved to obtain the solution, $\mathbf{x}$, of the original problem. This preconditioning can be applied before using regularization methods, reducing the amount of regularization required for stability with a  particular problem and data set. 
 
 In general, the left and right-multiplication can be done using different matrices~\citep{Bouwmeester2015}. Label the left preconditioner $\mathbf{L}$ and the right preconditioner $\mathbf{R}$. The linear problem:
 
@@ -347,16 +346,16 @@ Since the X-ray inversion problem is linear, there is no inherent cost to applyi
 
 There is no known general method to determine optimal values for $\mathbf{L}$ and $\mathbf{R}$. There are some specific cases, such as for symmetric matrices, where techniques exist, but the matrix which describes the X-ray inversion problem does not fall into any of these categories. This problem makes finding an appropriate preconditioner for the X-ray inversion problem non-trivial. We will try different combinations of known preconditioners, and stop when a selection is found that significantly reduces the condition number of the problem. 
 
-From a computational perspective, the ideal matrix representing the X-ray inversion problem would be the identity, with a condition number of one. Compared to the identity matrix, the real matrix representing the X-ray inversion problem has two main undesirable properties. The first is that the rows, which represent X-ray spectra from mono-energetic beams of electrons, have a high degree of col-linearity. This is the main cause of the high condition number of the matrix. The second problem is that the rows and columns have vastly different norms. This is because low energy beams of electrons do not penetrate far into the atmosphere, and their impact in terms of measurable X-rays is small. On the other hand, high energy beams of electrons need only have a small total particle flux to create a very large measurable X-ray response. Figure~\ref{matrix_spectral_plot} (top) shows this for a particular binning scheme on the response matrix though graphs of its rows. The spectrum of singular values is also shown. We will show that preconditioning can have a significant effect on the singular values of the resulting matrix. 
+From a computational perspective, the ideal matrix representing the X-ray inversion problem would be the identity, with a condition number of one. Compared to the identity matrix, the real matrix representing the X-ray inversion problem has two main undesirable properties. The first is that the rows, which represent X-ray spectra from mono-energetic beams of electrons, have a high degree of collinearity. This is the main cause of the high condition number of the matrix. The second problem is that the rows and columns have vastly different norms. This is because low energy beams of electrons do not penetrate far into the atmosphere, and their impact in terms of measurable X-rays is small. On the other hand, high energy beams of electrons need only have a small total particle flux to create a very large measurable X-ray response. Figure~\ref{matrix_spectral_plot} (top) shows this for a particular binning scheme on the response matrix though graphs of its rows. The spectrum of singular values is also shown. We will show that preconditioning can have a significant effect on the singular values of the resulting matrix. 
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter_4/matrix_spectral_plot/matrix_spectral_plot.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter_4/matrix_spectral_plot/matrix_spectral_plot2.pdf}
     \caption{(left): Graph of the rows of the X-ray response matrix. A high degree of co-linearity is apparent, as with a large scale change between rows. (right): Graph of the singular values of the X-ray response matrix, from largest to smallest. }
     \label{matrix_spectral_plot}
 \end{figure}
 
-One classic left-preconditioner is diagonal scaling~\citep{Pini1990}. A diagonal matrix is constructed such that the entries are equal to the inverse of the norm of the rows of the target matrix. This has the effect of making the row norms of the transformed matrix closer. Figure~\ref{matrix_spectral_plot} (bottom) shows the effect of applying this preconditioner. The row norms and the spectra of singular values span fewer orders of magnitude. For this example, diagonal scaling has improved the response condition number from a value of $1.6\times10^4$ to $1.3\times10^4$. The effect of the diagonal scaling preconditoner can also be seen across different binning schemes on the X-ray response matrix. The effect is not constant across binning schemes. This is shown in Figure~\ref{matrix_spectral_plot_diagonal_scaling}.
+One left-preconditioner is diagonal scaling~\citep{Pini1990}. A diagonal matrix is constructed such that the entries are equal to the inverse of the norm of the rows of the matrix representing the linear problem being solved. This has the effect of making the row norms of the transformed matrix closer. Figure~\ref{matrix_spectral_plot} (bottom) shows the effect of applying this preconditioner. The row norms and the spectra of singular values span fewer orders of magnitude. For this example, diagonal scaling has improved the response condition number from a value of $1.6\times10^4$ to $1.3\times10^4$. The effect of the diagonal scaling preconditoner can also be seen across different binning schemes on the X-ray response matrix. The effect is not constant across binning schemes. This is shown in Figure~\ref{matrix_spectral_plot_diagonal_scaling}.
 
 \begin{figure}[p]
     \centering
@@ -373,14 +372,14 @@ An intuitive and useful pair of left and right preconditioners for the X-ray inv
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter_4/matrix_scaling_plot/matrix_scaling_plot_vanilla.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter_4/matrix_scaling_plot/matrix_scaling_plot_vanilla2.pdf}
     \caption{Response matrix for the X-ray inversion problem. Order of magnitude scale differences across both rows and columns of the matrix contribute to the high condition number. Units are normalized per incident electron.}
     \label{matrix_scaling_plot}
 \end{figure}
 
 \begin{figure}[p]
     \centering
-    \includegraphics[width=\textwidth]{figures/chapter_4/matrix_scaling_plot/matrix_scaling_plot_transformed.pdf}
+    \includegraphics[width=\textwidth]{figures/chapter_4/matrix_scaling_plot/matrix_scaling_plot_xformed2.pdf}
     \caption{Response matrix for the X-ray inversion problem with left and right preconditioners applied. Scale differences across both rows and columns of the matrix have been reduced, improving the condition number. The units on the color axis are no longer physical, having been scaled by the preconditioning matrices.}
     \label{matrix_scaling_plot_transformed}
 \end{figure}
@@ -405,7 +404,7 @@ The fact that physical spectra are everywhere positive can easily be applied as 
 The first reason exposes a danger when applying preconditioning transformations. The response matrix has a simple physical interpretation, since it maps from the space of electron spectra to the space of X-ray spectra. This interpretation is lost after preconditioning transformations are applied. Although all the same information is contained in the better-conditioned, transformed, matrix, it is stretched and distorted to a degree which is difficult to visualize. This means that a ``small'' negative region in the preconditioned solution might be significant when mapped back to physical units. 
 
 Fast, constrained optimization is achievable through several techniques. For the particular case of non-negative least-squares optimization, the LAPACK FORTRAN routines have been wrapped and made available in most modern programming languages. These routines are fast, and since the X-ray inversion problem has a small (less than a million) entries in the matrices which encode it, the addition of a non-negativity constraint adds almost no computation time. 
-Figure~\ref{why_non_negative_is_good} shows an example of synthetic X-ray spectrum corresponding to an exponential electron distribution. The X-ray spectrum is generated at noise levels consistent with different electron fluxes, and an inversion is attempted in each case with the non-negativity constraint applied. The left and right-preconditioners from the last section are used with second order tikhonov regularization to compute the assumed electron spectrum from the data. 
+Figure~\ref{why_non_negative_is_good} shows an example of synthetic X-ray spectrum corresponding to an exponential electron distribution. The X-ray spectrum is generated at noise levels consistent with different electron fluxes ($10^9$, $10^8$, and $10^7$ total electrons), and an inversion is attempted in each case with the non-negativity constraint applied. The left and right preconditioners from the last section are used with second order Tikhonov regularization to compute the assumed electron spectrum from the data. 
 
 \begin{figure}[p]
     \centering
