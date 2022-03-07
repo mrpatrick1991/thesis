@@ -166,13 +166,6 @@ The final simplification for the simulation problem comes from the parameterizat
 \caption{GEANT4 representation of the detector geometry. The lower plexiglass mount is shown in cyan, the aluminum body in grey, and the led collimator in purple. The height of the complete unit is approximately 30 cm.}
 \end{figure}
 
-We examine how the detector geometry selects a population from the X-ray angular distribution. In the detector simulations, an isotropic source of X-ray photons at a fixed energy are created. We run two simulations independently: the first has the entire detector geometry, with its construction materials, enabled. The material corresponding to the sodium iodide crystal, however, is set to a vacuum. This is done to measure the population of photons that reach the crystal, rather than the dynamics of the energy deposition events that happen inside of it. The second simulation is the same, except that the detector materials are set to a vacuum as well as the sodium iodide detector. This provides a baseline which we compare against the first simulation. The distribution of photons which enter the detector geometry will be subset to those recorded when the detector materials are set to a vacuum. Figure~\ref{population_inside_detector} shows the results these two simulations. The lead collimator assembly at the top of the detector has limited the field of view. Some backscatter from the detector materials can also be seen in the first simulation. 
-
-\begin{figure}[p]
-\label{population_inside_detector}
-\includegraphics[width=\textwidth]{figures/chapter_3/population_inside_detector/population_inside_detector}
-\caption{}
-\end{figure}
 
 The atmospheric simulation showed that the angle distribution of the X-ray photons does not significantly depend on either the angular distribution of precipitating electrons or their energy distribution. Figure~\ref{population_inside_detector} indicates that the effect of the lead collimator of the detector is essentially to limit the angle from which photons may enter the sodium iodide crystal. Together, this means that the angular portion of the complete problem from electron precipitation, to the creation of x-rays, and finally, to detection, can be largely treated as trivial. To a good approximation, and at the relevant energies (100 keV to 2 MeV), a constant scalar which accounts for the detector field of view can be used to map recorded counts to physical units.
 
@@ -184,10 +177,6 @@ The behaviour of the sodium iodide crystal itself to the absorption of X-ray pho
 \caption{Energy deposition events inside the detector crystal for beams of monochromatic photons at different set energies. }
 \end{figure}
 
+\section{Detector Geometric Factor}
 
- 
-
-
-
-
-
+The detector has a limited field of view. A simulation of an isotropic X-ray source 1 meter above the detector aperture was run for $1.0\times10^7$ X-ray photons. The number flux of X-ray photons at the top of the detector is then $8.0\times10^5 \text{ m}^{-1}$. The detector collimator gives the detector an effective aperture of $113.0 \text{ cm}^2$. Of the $3.6\times10^3$ X-ray photons that entered the detector aperture from the isotropic source, $1.7\times10^3$ were recorded as energy deposition events in the crystal. The conversion rate is approximately 48 percent. 
